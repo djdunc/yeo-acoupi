@@ -1,0 +1,55 @@
+{
+  "id": "c88d3edd-d87e-4292-97bc-ba1490f32cd7",
+  "name_model": "BirdNET",
+  "recording": {
+    "created_on": "2026-04-20T11:04:25.068452",
+    "duration": 3,
+    "samplerate": 192000,
+    "deployment": {
+      "id": "efafabe1-c8ac-422a-9d2b-0eaf1ea21765",
+      "name": "garden-unoq-5",
+      "latitude": 51,
+      "longitude": 0,
+      "started_on": "2026-04-20T07:39:37.327813",
+      "ended_on": null
+    },
+    "path": "/run/shm/20260420_110425.wav",
+    "audio_channels": 1,
+    "chunksize": 8192,
+    "id": "fe9a813f-fb38-4824-bf62-437881a38540"
+  },
+  "tags": [],
+  "detections": [
+    {
+      "id": "4c3ecac5-eb43-4926-820e-542972216963",
+      "location": {
+        "type": "BoundingBox",
+        "coordinates": [
+          0,
+          0,
+          3,
+          96000
+        ]
+      },
+      "detection_score": 0.47452878952026367,
+      "tags": [
+        {
+          "tag": {
+            "key": "Common Name",
+            "value": "Eurasian Blackbird"
+          },
+          "confidence_score": 0.47452878952026367
+        }
+      ]
+    }
+  ],
+  "created_on": "2026-04-20T11:04:29.259176"
+}
+
+
+
+{
+  "sent_on":"2026-04-20T13:52:41.042169",
+  "device_id":"140075124633129",
+  "status":"OK"
+}

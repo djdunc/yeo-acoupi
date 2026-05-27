@@ -1,4 +1,5 @@
 altair==6.0.0
+astral
 attrs==26.1.0
 blinker==1.9.0
 cachetools==7.0.5
