@@ -1,0 +1,22 @@
+name: yeo-acoupi-deployment
+
+services:
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yeo-streamlit
+    restart: unless-stopped
+    expose:
+      - "8501"
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: yeo-nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - streamlit
