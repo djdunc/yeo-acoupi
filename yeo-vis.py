@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import pandas as pd
 from influxdb_client import InfluxDBClient
 import plotly.express as px
@@ -6,17 +7,20 @@ from astral import LocationInfo
 from astral.sun import sun
 from datetime import timedelta
 
-# Access secrets
-# stored in .streamlit/secrets.toml
-# INFLUX_URL = ""
-# INFLUX_TOKEN = ""
-# INFLUX_ORG = ""
-# INFLUX_BUCKET = ""
+# Access secrets with environment variable fallback
+def get_secret(key):
+    if key in st.secrets:
+        return st.secrets[key]
+    if f"STREAMLIT_{key}" in os.environ:
+        return os.environ[f"STREAMLIT_{key}"]
+    if key in os.environ:
+        return os.environ[key]
+    raise KeyError(f"Could not find secret '{key}' in Streamlit secrets or environment variables.")
 
-URL = st.secrets["INFLUX_URL"]
-TOKEN = st.secrets["INFLUX_TOKEN"]
-ORG = st.secrets["INFLUX_ORG"]
-BUCKET = st.secrets["INFLUX_BUCKET"]
+URL = get_secret("INFLUX_URL")
+TOKEN = get_secret("INFLUX_TOKEN")
+ORG = get_secret("INFLUX_ORG")
+BUCKET = get_secret("INFLUX_BUCKET")
 
 # Connect to InfluxDB
 client = InfluxDBClient(url=URL, token=TOKEN, org=ORG)
