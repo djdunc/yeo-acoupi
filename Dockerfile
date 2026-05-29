@@ -22,8 +22,13 @@ COPY requirements.txt .
 # Install the Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application source code and configuration
+# Ensure .streamlit folder and secrets.toml exist so environment variables can load
+RUN mkdir -p .streamlit && touch .streamlit/secrets.toml
+
+# Copy the application source code
 COPY yeo-vis.py .
+
+# Copy the local configuration folder if it exists in the build context
 COPY .streamli[t]/ .streamlit/
 
 # Expose the default Streamlit port
