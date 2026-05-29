@@ -28,6 +28,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
     
+    - name: Ensure configuration folder exists
+      run: mkdir -p .streamlit
+    
     - name: Build the Yeo-Acoupi Vis Docker image
       run: |
          docker build --file ./Dockerfile --tag ghcr.io/djdunc/yeo-acoupi-vis:latest .

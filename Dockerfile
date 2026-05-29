@@ -24,7 +24,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application source code and configuration
 COPY yeo-vis.py .
-COPY .streamlit/ .streamlit/
+COPY .streamli[t]/ .streamlit/
 
 # Expose the default Streamlit port
 EXPOSE 8501
