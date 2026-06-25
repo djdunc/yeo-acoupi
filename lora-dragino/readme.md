@@ -1,6 +1,9 @@
 # Uno Q to Dragino LA66 LoRaWAN Bridge Configuration
 This repository contains the configuration scripts and architecture overview for running direct, bi-directional LoRaWAN communications from the Linux MPU core of the Arduino Uno Q to a Dragino LA66 LoRa Shield running the DR-LWS-007 stack.
 
+[LA66 LoRaWAN Shield User Manual](https://wiki-old.dragino.com/xwiki/bin/view/Main/User%20Manual%20for%20LoRaWAN%20End%20Nodes/LA66%20LoRaWAN%20Shield%20User%20Manual/)
+
+
 ## Hardware Architecture & Wiring
 Because the Linux core (Debian) on the Uno Q does not have direct copper traces mapped to the external digital headers, all communication must route through the onboard microcontroller (MCU) core acting as a transparent proxy.
 
