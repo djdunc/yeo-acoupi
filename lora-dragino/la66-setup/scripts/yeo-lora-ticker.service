@@ -1,0 +1,21 @@
+[Unit]
+# Fallback autostart for the LA66 ticker, in case the framework's default-app
+# ("arduino-app-cli properties set default user:la66") does NOT start it on boot.
+# Idempotent: only starts the app if it isn't already running, so it is safe to
+# have installed even if the default-app mechanism works.
+Description=Yeo LA66 LoRaWAN ticker autostart (fallback)
+After=arduino-app-cli.service arduino-router.service network-online.target
+Wants=arduino-app-cli.service arduino-router.service
+
+[Service]
+Type=oneshot
+User=arduino
+Group=arduino
+Environment=ARDUINO_ROUTER_SOCKET=/var/run/arduino-router.sock
+# give the app-cli daemon + router time to come up after boot
+ExecStartPre=/bin/sleep 25
+ExecStart=/bin/sh -c 'arduino-app-cli app list 2>/dev/null | grep -qE "la66[[:space:]].*running" || arduino-app-cli app start user:la66'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

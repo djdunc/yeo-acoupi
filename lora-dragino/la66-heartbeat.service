@@ -1,0 +1,8 @@
+[Unit]
+Description=LA66 LoRaWAN heartbeat (single-shot, fired by timer)
+After=arduino-router.service
+Requires=arduino-router.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /home/arduino/la66_heartbeat.py

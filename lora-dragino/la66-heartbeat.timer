@@ -1,0 +1,16 @@
+[Unit]
+Description=Fire the LA66 heartbeat every N minutes
+
+[Timer]
+# Set the interval here. Edit OnUnitActiveSec to your chosen heartbeat period.
+# EU868 1% duty cycle: an SF7 heartbeat is tiny, so anything >= ~1 min is safe;
+# 5-15 min is typical for an "alive" beacon. Set to 10 min to respect TTN
+# fair-use (30s airtime/device/day): 144 uplinks/day stays under budget
+# across SF7-SF9. A 5-min cadence risks breaching it if ADR raises the SF.
+OnBootSec=2min
+OnUnitActiveSec=10min
+AccuracySec=10s
+Persistent=true
+
+[Install]
+WantedBy=timers.target
