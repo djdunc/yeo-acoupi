@@ -1,0 +1,46 @@
+[project]
+name = "acoupi-yeo-valley"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "acoupi>=0.5.2",
+  "batdetect2==2.0.0b1",
+  "birdnet>=0.2.16",
+  "onnx>=1.19.0",
+  "onnxscript>=0.5.0",
+  # Declared directly (not just via batdetect2) so [tool.uv.sources] below can
+  # pin them to the CPU index — uv only applies sources to direct dependencies.
+  "torch==2.11.0",
+  "torchaudio==2.11.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+  "flower>=2.0.1",
+  "pytest>=9.0.3",
+  "questionary>=2.1.1",
+  "ruff>=0.15.12",
+  "textual>=6.2.1",
+  "ty>=0.0.34",
+]
+
+
+[tool.ruff]
+line-length = 79
+
+# Edge devices have no NVIDIA GPU: pull torch from the CPU-only index so the
+# aarch64 resolve doesn't drag in ~2.3 GB of unusable CUDA wheels.
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+torchaudio = { index = "pytorch-cpu" }

@@ -1,5 +1,11 @@
 # UNO Q Cellular Setup
 
+> **See also: [`UNO_Q_CELLULAR_SETUP.md`](../../docs/UNO_Q_CELLULAR_SETUP.md) (in `docs/`)** —
+> the full end-to-end runbook (driver + app + systemd service + cetools MQTT +
+> radio-off), the cellular equivalent of `UNO_Q_LA66_SETUP.md`. **This file** is the
+> lower-level bring-up/troubleshooting background (power isolation, minicom, AT
+> provisioning, SMS, and why PPP fails); start with the runbook, come here for depth.
+
 Comprehensive Setup & Troubleshooting Guide: Arduino UNO Q + Waveshare A7670E (Cat-1)
 This document outlines the architecture and configuration required to successfully bridge an Arduino UNO Q to a Waveshare A7670E Cellular HAT running on the UK Giffgaff/O2 network.
 

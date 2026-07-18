@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fieldsong · Willowmere Farm biodiversity</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  img,svg{max-width:100%}
+  #themeToggle{appearance:none;border:1px solid var(--line);background:var(--surface-2);
+    color:var(--ink-soft);border-radius:8px;padding:6px 10px;cursor:pointer;font:inherit;font-size:12.5px}
+  #themeToggle:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+<style>
+  :root {
+    --bg: #EDF0EA;
+    --surface: #FBFCFA;
+    --surface-2: #F1F4EE;
+    --surface-3: #E7ECE2;
+    --ink: #1A241E;
+    --ink-soft: #55605A;
+    --ink-faint: #8A968D;
+    --line: #D6DCD1;
+    --line-soft: #E3E8DE;
+    --accent: #2E8B5B;
+    --accent-ink: #ffffff;
+    --birds: #D98A2B;
+    --bats: #5E6FD0;
+    --native: #2E8B5B;
+    --nonnative: #C6693F;
+    --notable: #8C63C4;
+    --shadow: 0 1px 2px rgba(20,40,28,.08), 0 6px 20px rgba(20,40,28,.10);
+    --shadow-soft: 0 1px 3px rgba(20,40,28,.10);
+    /* 5-band richness ramp: straw -> teal-green */
+    --r1: #DCD494; --r2: #B4CE84; --r3: #79B978; --r4: #3CA079; --r5: #1E7E6E;
+    --field-a: #D4DEC0; --field-b: #C7D6B2; --field-c: #DAE2CA; --field-d: #CDD9B8;
+    --wood: #9FBE93; --wood-dark: #7FA579; --pond: #A9C9D6; --pond-deep:#8CB6C6;
+    --stream: #B4CFD6; --hedge: #7C9A6E; --soil:#C9B58E; --barn:#B98E6B;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0E1310; --surface: #161D18; --surface-2: #1C2620; --surface-3: #23302A;
+      --ink: #E7ECE5; --ink-soft: #A0ADA4; --ink-faint: #6E7B72;
+      --line: #2B352E; --line-soft: #222C26;
+      --accent: #4FBE84; --accent-ink: #08130D;
+      --birds: #E7A64B; --bats: #8291E6;
+      --native: #4FBE84; --nonnative: #DB8158; --notable: #A784DC;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.45);
+      --shadow-soft: 0 1px 3px rgba(0,0,0,.4);
+      --r1: #7E7A44; --r2: #8FA857; --r3: #5FA96F; --r4: #38B085; --r5: #29C79E;
+      --field-a: #263127; --field-b: #2C3A2C; --field-c: #212C22; --field-d: #2A362A;
+      --wood: #33452F; --wood-dark: #3E5438; --pond: #244452; --pond-deep:#2B5262;
+      --stream: #2A4A52; --hedge: #46603B; --soil:#4A3E29; --barn:#5A4130;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #EDF0EA; --surface: #FBFCFA; --surface-2: #F1F4EE; --surface-3: #E7ECE2;
+    --ink: #1A241E; --ink-soft: #55605A; --ink-faint: #8A968D;
+    --line: #D6DCD1; --line-soft: #E3E8DE;
+    --accent: #2E8B5B; --accent-ink: #ffffff;
+    --birds: #D98A2B; --bats: #5E6FD0; --native: #2E8B5B; --nonnative: #C6693F; --notable: #8C63C4;
+    --shadow: 0 1px 2px rgba(20,40,28,.08), 0 6px 20px rgba(20,40,28,.10);
+    --r1: #DCD494; --r2: #B4CE84; --r3: #79B978; --r4: #3CA079; --r5: #1E7E6E;
+    --field-a: #D4DEC0; --field-b: #C7D6B2; --field-c: #DAE2CA; --field-d: #CDD9B8;
+    --wood: #9FBE93; --wood-dark: #7FA579; --pond: #A9C9D6; --pond-deep:#8CB6C6;
+    --stream: #B4CFD6; --hedge: #7C9A6E; --soil:#C9B58E; --barn:#B98E6B;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1310; --surface: #161D18; --surface-2: #1C2620; --surface-3: #23302A;
+    --ink: #E7ECE5; --ink-soft: #A0ADA4; --ink-faint: #6E7B72;
+    --line: #2B352E; --line-soft: #222C26;
+    --accent: #4FBE84; --accent-ink: #08130D;
+    --birds: #E7A64B; --bats: #8291E6; --native: #4FBE84; --nonnative: #DB8158; --notable: #A784DC;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.45);
+    --r1: #7E7A44; --r2: #8FA857; --r3: #5FA96F; --r4: #38B085; --r5: #29C79E;
+    --field-a: #263127; --field-b: #2C3A2C; --field-c: #212C22; --field-d: #2A362A;
+    --wood: #33452F; --wood-dark: #3E5438; --pond: #244452; --pond-deep:#2B5262;
+    --stream: #2A4A52; --hedge: #46603B; --soil:#4A3E29; --barn:#5A4130;
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  .app {
+    background: var(--bg); color: var(--ink);
+    height: 100vh; overflow: hidden; display: flex; flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    padding: 14px 22px; background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand .mark {
+    font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    font-size: 22px; font-weight: 600; letter-spacing: -.01em; color: var(--ink);
+  }
+  .brand .sub {
+    font-size: 12px; color: var(--ink-faint); letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .spacer { flex: 1 1 auto; }
+  .control { display: flex; flex-direction: column; gap: 5px; }
+  .control > .clabel {
+    font-size: 10.5px; letter-spacing: .09em; text-transform: uppercase;
+    color: var(--ink-faint); padding-left: 2px;
+  }
+  .segmented {
+    display: inline-flex; background: var(--surface-2);
+    border: 1px solid var(--line); border-radius: 9px; padding: 3px;
+  }
+  .segmented button {
+    appearance: none; border: 0; background: transparent; cursor: pointer;
+    font: inherit; font-size: 12.5px; color: var(--ink-soft);
+    padding: 5px 11px; border-radius: 6px; transition: all .15s ease;
+    white-space: nowrap;
+  }
+  .segmented button:hover { color: var(--ink); }
+  .segmented button[aria-pressed="true"] {
+    background: var(--surface); color: var(--ink); box-shadow: var(--shadow-soft);
+    font-weight: 600;
+  }
+  .segmented.lens button[aria-pressed="true"] {
+    background: var(--accent); color: var(--accent-ink);
+  }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+  /* ---------- stage ---------- */
+  .stage {
+    flex: 1 1 auto; display: grid; grid-template-columns: 1.55fr 1fr;
+    gap: 0; min-height: 0;
+  }
+  .mapwrap {
+    position: relative; overflow: hidden; background: var(--field-c);
+    border-right: 1px solid var(--line); cursor: grab; touch-action: none;
+  }
+  .mapwrap.grabbing { cursor: grabbing; }
+  .mapscene { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
+  .basemap { display: block; width: 100%; height: 100%; }
+  .markerlayer { position: absolute; inset: 0; pointer-events: none; }
+
+  .zoomctl { position: absolute; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 6px; z-index: 6; }
+  .zoomctl button {
+    width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink); box-shadow: var(--shadow-soft);
+    font-size: 18px; line-height: 1; cursor: pointer; display: grid; place-items: center;
+    font-family: inherit;
+  }
+  .zoomctl button:hover { background: var(--surface-2); }
+  .zoomctl button:active { transform: translateY(1px); }
+
+  .marker {
+    position: absolute; transform: translate(-50%, -50%);
+    pointer-events: auto; cursor: pointer; border: 0; background: transparent;
+    padding: 0; line-height: 0;
+  }
+  .marker .dot {
+    display: block; border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,.92);
+    box-shadow: 0 2px 6px rgba(10,20,14,.35);
+    transition: transform .18s ease;
+  }
+  :root[data-theme="dark"] .marker .dot { border-color: rgba(12,20,15,.85); }
+  @media (prefers-color-scheme: dark) { .marker .dot { border-color: rgba(12,20,15,.85); } }
+  .marker:hover .dot { transform: scale(1.08); }
+  .marker.selected .dot {
+    box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--accent), 0 2px 8px rgba(10,20,14,.4);
+  }
+  .marker .ping {
+    position: absolute; left: 50%; top: 50%; border-radius: 50%;
+    border: 2px solid var(--accent); opacity: 0;
+  }
+  .marker.pulse .ping { animation: ping 1.4s ease-out 2; }
+  @keyframes ping {
+    0% { width: 0; height: 0; opacity: .8; }
+    100% { width: 90px; height: 90px; opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marker.pulse .ping { animation: none; }
+    .marker .dot { transition: none; }
+  }
+  .marker .tip {
+    position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--bg); padding: 8px 11px; border-radius: 8px;
+    font-size: 11.5px; line-height: 1.5; white-space: nowrap; text-align: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .12s ease; box-shadow: var(--shadow); z-index: 5;
+  }
+  .marker .tip b { color: var(--bg); font-weight: 600; }
+  .marker .tip .tip-sub { color: color-mix(in srgb, var(--bg) 72%, var(--ink)); }
+  .marker:hover .tip, .marker:focus-visible .tip { opacity: 1; }
+
+  /* legend + lens caption overlays */
+  .overlay {
+    position: absolute; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 12px; box-shadow: var(--shadow); padding: 12px 14px;
+  }
+  .legend { left: 16px; bottom: 16px; max-width: 230px; }
+  .legend h4 {
+    margin: 0 0 8px; font-size: 11px; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--ink-faint); font-weight: 600;
+  }
+  .ramp { display: flex; height: 12px; border-radius: 4px; overflow: hidden; margin-bottom: 5px; }
+  .ramp span { flex: 1; }
+  .ramp-ends { display: flex; justify-content: space-between; font-size: 10.5px; color: var(--ink-soft); }
+  .legend .sizekey { display: flex; align-items: center; gap: 8px; margin-top: 11px; }
+  .legend .sizekey .dots { display: flex; align-items: center; gap: 6px; }
+  .legend .sizekey i {
+    display: inline-block; border-radius: 50%; background: var(--ink-faint);
+    border: 1.5px solid var(--surface);
+  }
+  .legend .sizekey small { font-size: 10.5px; color: var(--ink-soft); }
+
+  .lenscap { right: 16px; top: 16px; max-width: 220px; font-size: 12px; color: var(--ink-soft); line-height: 1.45; }
+  .lenscap strong { color: var(--ink); display: block; font-size: 12.5px; margin-bottom: 3px; }
+
+  /* ---------- panel ---------- */
+  .panel {
+    background: var(--surface); overflow-y: auto; overscroll-behavior: contain; min-height: 0;
+    display: flex; flex-direction: column;
+  }
+  .panel-inner { padding: 20px 22px 40px; }
+
+  .p-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 4px; }
+  .p-head .titles { flex: 1; }
+  .p-eyebrow { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .p-title {
+    font-family: Georgia, "Iowan Old Style", serif; font-size: 24px; font-weight: 600;
+    letter-spacing: -.01em; margin: 2px 0 0; text-wrap: balance;
+  }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px;
+    padding: 3px 9px; border-radius: 20px; background: var(--surface-3); color: var(--ink-soft);
+    border: 1px solid var(--line-soft); margin-top: 8px;
+  }
+  .chip .swatch { width: 8px; height: 8px; border-radius: 50%; }
+  .closebtn {
+    appearance: none; border: 1px solid var(--line); background: var(--surface-2);
+    color: var(--ink-soft); width: 30px; height: 30px; border-radius: 8px; cursor: pointer;
+    font-size: 15px; line-height: 1; display: grid; place-items: center;
+  }
+  .closebtn:hover { color: var(--ink); background: var(--surface-3); }
+
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 18px 0 6px; }
+  .tile { background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 11px; padding: 11px 12px; }
+  .tile .k { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .tile .v { font-size: 23px; font-weight: 600; margin-top: 3px; font-variant-numeric: tabular-nums; letter-spacing: -.02em; }
+  .tile .v small { font-size: 12px; color: var(--ink-faint); font-weight: 500; margin-left: 1px; }
+
+  .block { margin-top: 24px; }
+  .block > h3 {
+    font-size: 12.5px; letter-spacing: .04em; margin: 0 0 12px; color: var(--ink);
+    display: flex; align-items: center; justify-content: space-between; font-weight: 600;
+  }
+  .block > h3 .hint { font-size: 11px; color: var(--ink-faint); font-weight: 400; letter-spacing: 0; }
+
+  /* species composition */
+  .species { display: flex; flex-direction: column; gap: 9px; }
+  .sp-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; }
+  .sp-name { display: flex; align-items: center; gap: 8px; font-size: 13px; min-width: 0; }
+  .sp-name .gdot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .sp-name .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sp-name .tag {
+    font-size: 9.5px; letter-spacing: .04em; text-transform: uppercase; padding: 1.5px 6px;
+    border-radius: 5px; font-weight: 600; flex: none;
+  }
+  .tag.nonnat { background: color-mix(in srgb, var(--nonnative) 18%, transparent); color: var(--nonnative); }
+  .tag.notab { background: color-mix(in srgb, var(--notable) 18%, transparent); color: var(--notable); }
+  .sp-bar { grid-column: 1 / -1; height: 6px; background: var(--surface-3); border-radius: 4px; overflow: hidden; margin-top: -3px; }
+  .sp-bar i { display: block; height: 100%; border-radius: 4px; }
+  .sp-count { font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+
+  .chartbox { background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 12px; padding: 14px; }
+  svg.chart { display: block; width: 100%; height: auto; overflow: visible; }
+  .axislbl { fill: var(--ink-faint); font-size: 10px; }
+  .gridline { stroke: var(--line); stroke-width: 1; }
+
+  .diel-wrap { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .diel-legend { display: flex; flex-direction: column; gap: 9px; font-size: 12px; color: var(--ink-soft); }
+  .diel-legend .lk { display: flex; align-items: center; gap: 8px; }
+  .diel-legend .lk i { width: 11px; height: 11px; border-radius: 3px; }
+  .diel-legend .note { font-size: 11px; color: var(--ink-faint); max-width: 150px; line-height: 1.4; margin-top: 2px; }
+
+  /* ticker */
+  .ticker { display: flex; flex-direction: column; gap: 0; }
+  .tk-row {
+    display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center;
+    padding: 9px 2px; border-bottom: 1px solid var(--line-soft); font-size: 13px;
+    animation: slidein .35s ease;
+  }
+  @keyframes slidein { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { .tk-row { animation: none; } }
+  .tk-row .gdot { width: 8px; height: 8px; border-radius: 50%; }
+  .tk-row .tk-sp { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tk-row .tk-sp .where { color: var(--ink-faint); font-size: 11.5px; }
+  .tk-row .tk-t { color: var(--ink-faint); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+  .live-pill {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 10.5px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--accent); font-weight: 600;
+  }
+  .live-pill .blip { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: blink 1.6s infinite; }
+  @keyframes blink { 50% { opacity: .3; } }
+  @media (prefers-reduced-motion: reduce) { .live-pill .blip { animation: none; } }
+
+  .callout {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px;
+  }
+  .callout .c {
+    background: var(--surface-2); border: 1px solid var(--line-soft); border-radius: 11px; padding: 12px 13px;
+  }
+  .callout .c .k { font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); }
+  .callout .c .big { font-size: 15px; font-weight: 600; margin-top: 4px; }
+  .callout .c .sm { font-size: 11.5px; color: var(--ink-soft); margin-top: 2px; }
+
+  .hintline { font-size: 12.5px; color: var(--ink-faint); margin-top: 18px; display: flex; align-items: center; gap: 7px; line-height: 1.5; }
+  .hintline svg { flex: none; }
+
+  .footnote { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--line-soft); font-size: 11px; color: var(--ink-faint); line-height: 1.5; }
+
+  @media (max-width: 920px) {
+    .app { height: auto; overflow: visible; }
+    .stage { grid-template-columns: 1fr; }
+    .mapwrap { min-height: 56vh; border-right: 0; border-bottom: 1px solid var(--line); }
+    .panel { overflow-y: visible; }
+    .tiles { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .topbar { gap: 12px; }
+  }
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <span class="mark">Fieldsong</span>
+      <span class="sub">Willowmere Farm · biodiversity</span>
+    </div>
+    <div class="spacer"></div>
+    <div class="control">
+      <span class="clabel">Time window</span>
+      <div class="segmented" id="windowSeg" role="group" aria-label="Time window">
+        <button data-win="24h" aria-pressed="false">24h</button>
+        <button data-win="7d" aria-pressed="true">7 days</button>
+        <button data-win="30d" aria-pressed="false">30 days</button>
+        <button data-win="all" aria-pressed="false">Season</button>
+      </div>
+    </div>
+    <div class="control">
+      <span class="clabel">Colour markers by</span>
+      <div class="segmented lens" id="lensSeg" role="group" aria-label="Colour lens">
+        <button data-lens="richness" aria-pressed="true">Richness</button>
+        <button data-lens="native" aria-pressed="false">Native ratio</button>
+        <button data-lens="notable" aria-pressed="false">Notable</button>
+        <button data-lens="health" aria-pressed="false">Health</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="stage">
+    <section class="mapwrap" aria-label="Farm map">
+      <div class="mapscene" id="mapScene">
+      <svg class="basemap" viewBox="0 0 1000 720" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <!-- base pasture -->
+        <rect x="0" y="0" width="1000" height="720" fill="var(--field-c)"/>
+        <!-- fields -->
+        <path d="M0,0 L470,0 L430,250 L0,300 Z" fill="var(--field-a)"/>
+        <path d="M470,0 L1000,0 L1000,210 L620,240 L520,120 Z" fill="var(--field-b)"/>
+        <path d="M0,300 L430,250 L470,470 L0,540 Z" fill="var(--field-d)"/>
+        <path d="M0,540 L470,470 L560,720 L0,720 Z" fill="var(--field-b)"/>
+        <path d="M470,470 L900,430 L980,720 L560,720 Z" fill="var(--field-a)"/>
+        <path d="M620,240 L1000,210 L1000,430 L900,430 L700,360 Z" fill="var(--field-d)"/>
+        <!-- woodland -->
+        <path d="M700,20 L1000,10 L1000,190 L780,215 L690,120 Z" fill="var(--wood)"/>
+        <g fill="var(--wood-dark)" opacity="0.85">
+          <circle cx="760" cy="70" r="26"/><circle cx="820" cy="55" r="30"/><circle cx="885" cy="80" r="27"/>
+          <circle cx="945" cy="60" r="30"/><circle cx="800" cy="120" r="28"/><circle cx="870" cy="140" r="30"/>
+          <circle cx="940" cy="130" r="26"/><circle cx="730" cy="130" r="22"/><circle cx="915" cy="185" r="22"/>
+        </g>
+        <!-- pond -->
+        <ellipse cx="175" cy="415" rx="95" ry="62" fill="var(--pond)"/>
+        <ellipse cx="165" cy="420" rx="60" ry="38" fill="var(--pond-deep)"/>
+        <!-- stream -->
+        <path d="M430,0 C470,120 380,180 470,300 C540,400 380,470 470,600 C500,660 470,700 460,720"
+              fill="none" stroke="var(--stream)" stroke-width="16" stroke-linecap="round" opacity="0.9"/>
+        <!-- hedgerows -->
+        <g stroke="var(--hedge)" stroke-width="9" stroke-linecap="round" fill="none" opacity="0.9">
+          <path d="M20,290 L420,245"/>
+          <path d="M480,470 L890,432"/>
+          <path d="M525,130 L620,240 L700,360"/>
+          <path d="M60,545 L450,478"/>
+        </g>
+        <!-- track -->
+        <path d="M560,720 L600,520 L700,430 L900,430" fill="none" stroke="var(--soil)" stroke-width="11" stroke-linecap="round" opacity="0.75" stroke-dasharray="2 16"/>
+        <!-- barn -->
+        <g>
+          <rect x="655" y="560" width="70" height="48" rx="4" fill="var(--barn)"/>
+          <path d="M650,560 L690,540 L730,560 Z" fill="var(--wood-dark)"/>
+        </g>
+      </svg>
+      </div>
+      <div class="markerlayer" id="markerLayer"></div>
+      <div class="zoomctl">
+        <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+        <button id="zoomOut" type="button" aria-label="Zoom out">&minus;</button>
+        <button id="zoomReset" type="button" aria-label="Reset view" title="Reset view" style="font-size:15px">&#10530;</button>
+      </div>
+
+      <div class="overlay legend" id="legend">
+        <h4 id="legendTitle">Species richness</h4>
+        <div class="ramp" id="legendRamp"></div>
+        <div class="ramp-ends"><span id="legendLo">fewer</span><span id="legendHi">more species</span></div>
+        <div class="sizekey">
+          <span class="dots">
+            <i style="width:9px;height:9px"></i><i style="width:15px;height:15px"></i><i style="width:22px;height:22px"></i>
+          </span>
+          <small>marker size = detection activity</small>
+        </div>
+      </div>
+
+      <div class="overlay lenscap" id="lensCap">
+        <strong>Species richness</strong>
+        Greener, larger markers mean a busy, varied habitat. Amber = lots of calls from just a few species.
+      </div>
+    </section>
+
+    <aside class="panel"><div class="panel-inner" id="panel"></div></aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- deterministic RNG ----------
+  function hashStr(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+  function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+  function rngFor(seed){return mulberry32(hashStr(seed));}
+
+  // ---------- species catalogue ----------
+  // group: bird|bat ; native:false => non-native ; notable:true => rare/notable
+  const B = (name,native,notable)=>({name,group:"bird",native,notable});
+  const T = (name,notable)=>({name,group:"bat",native:true,notable:!!notable});
+  const CAT = {
+    robin:B("Robin",true), blackbird:B("Blackbird",true), wren:B("Wren",true),
+    songthrush:B("Song Thrush",true), skylark:B("Skylark",true,false), yellowhammer:B("Yellowhammer",true),
+    chaffinch:B("Chaffinch",true), goldfinch:B("Goldfinch",true), housesparrow:B("House Sparrow",true),
+    bluetit:B("Blue Tit",true), greattit:B("Great Tit",true), buzzard:B("Buzzard",true),
+    gwoodpecker:B("Green Woodpecker",true), barnowl:B("Barn Owl",true,true), tawnyowl:B("Tawny Owl",true),
+    nightingale:B("Nightingale",true,true), cuckoo:B("Cuckoo",true,true), turtledove:B("Turtle Dove",true,true),
+    reedbunting:B("Reed Bunting",true), lapwing:B("Lapwing",true,true), moorhen:B("Moorhen",true),
+    parakeet:B("Ring-necked Parakeet",false), pheasant:B("Pheasant",false), canadagoose:B("Canada Goose",false),
+    egyptiangoose:B("Egyptian Goose",false),
+    commonpip:T("Common Pipistrelle"), sopranopip:T("Soprano Pipistrelle"), noctule:T("Noctule"),
+    brownlongeared:T("Brown Long-eared Bat"), daubenton:T("Daubenton's Bat"), serotine:T("Serotine"),
+    barbastelle:T("Barbastelle",true), lesserhorseshoe:T("Lesser Horseshoe",true),
+  };
+
+  // ---------- sensors ----------
+  // w = base per-species weight (calls/day-ish). x/y in %.
+  function sp(key,w){return {key,w};}
+  const SENSORS = [
+    { id:"s-hedge", label:"West Hedgerow", habitat:"Hedgerow", x:26, y:37,
+      list:[sp("yellowhammer",7),sp("chaffinch",9),sp("goldfinch",6),sp("wren",8),sp("robin",10),
+            sp("blackbird",9),sp("greattit",6),sp("bluetit",7),sp("nightingale",1.2),sp("commonpip",5),
+            sp("sopranopip",3),sp("pheasant",4)] },
+    { id:"s-wood", label:"Oak Copse", habitat:"Broadleaf woodland", x:80, y:20,
+      list:[sp("songthrush",8),sp("blackbird",10),sp("robin",9),sp("wren",9),sp("bluetit",8),sp("greattit",8),
+            sp("gwoodpecker",4),sp("tawnyowl",3),sp("buzzard",2.5),sp("brownlongeared",4),sp("noctule",5),
+            sp("commonpip",6),sp("barbastelle",0.8),sp("cuckoo",1.4)] },
+    { id:"s-pond", label:"Millpond Margin", habitat:"Pond & wetland", x:17, y:57,
+      list:[sp("moorhen",6),sp("reedbunting",5),sp("wren",6),sp("robin",7),sp("blackbird",6),
+            sp("daubenton",7),sp("sopranopip",6),sp("commonpip",5),sp("lapwing",1.6),sp("canadagoose",5),
+            sp("egyptiangoose",2)] },
+    { id:"s-pasture", label:"Long Pasture", habitat:"Grassland", x:50, y:56,
+      list:[sp("skylark",8),sp("yellowhammer",5),sp("robin",6),sp("chaffinch",5),sp("housesparrow",6),
+            sp("buzzard",2),sp("pheasant",5),sp("noctule",4),sp("commonpip",4),sp("lapwing",1.2)] },
+    { id:"s-barn", label:"Barn Eaves", habitat:"Farmyard", x:69, y:80,
+      list:[sp("housesparrow",11),sp("blackbird",7),sp("robin",7),sp("barnowl",2.2),sp("swallowless",0),
+            sp("commonpip",7),sp("sopranopip",5),sp("serotine",3),sp("parakeet",3),sp("pheasant",4)]
+        .filter(x=>x.w>0) },
+    { id:"s-stream", label:"Stream Crossing", habitat:"Riparian", x:45, y:29,
+      list:[sp("wren",8),sp("robin",7),sp("blackbird",7),sp("reedbunting",4),sp("songthrush",5),
+            sp("daubenton",8),sp("commonpip",6),sp("sopranopip",4),sp("lesserhorseshoe",0.6),sp("moorhen",3)] },
+  ];
+
+  const WINDOWS = { "24h":{mult:1,label:"last 24 hours",kind:"hourly"},
+                    "7d":{mult:6,label:"last 7 days",kind:"daily7"},
+                    "30d":{mult:24,label:"last 30 days",kind:"daily30"},
+                    "all":{mult:150,label:"this season",kind:"monthly"} };
+
+  // ---------- derive per-sensor metrics for a window ----------
+  function speciesPresence(sensor, winKey){
+    const w = WINDOWS[winKey]; const out=[];
+    for(const s of sensor.list){
+      const meta = CAT[s.key]; if(!meta) continue;
+      const r = rngFor(sensor.id+"|"+s.key+"|"+winKey);
+      let det = Math.floor(s.w * w.mult * (0.55 + 0.9*r()));
+      // rare species may not appear in short windows
+      if(det < 1) continue;
+      out.push({ ...meta, key:s.key, det });
+    }
+    out.sort((a,b)=>b.det-a.det);
+    return out;
+  }
+
+  function metrics(sensor, winKey){
+    const present = speciesPresence(sensor, winKey);
+    const activity = present.reduce((a,b)=>a+b.det,0);
+    const richness = present.length;
+    const natives = present.filter(p=>p.native).length;
+    const nonnat = present.filter(p=>!p.native).length;
+    const notable = present.filter(p=>p.notable).length;
+    const nativeRatio = richness? natives/richness : 1;
+    // health 0-100: richness (cap 22)*50 + nativeRatio*35 + notable presence *15
+    const health = Math.round(Math.min(1,richness/22)*50 + nativeRatio*35 + Math.min(1,notable/2)*15);
+    return { present, activity, richness, natives, nonnat, notable, nativeRatio, health };
+  }
+
+  // ---------- colour lenses ----------
+  const css = (v)=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  function ramp5(){ return [css('--r1'),css('--r2'),css('--r3'),css('--r4'),css('--r5')]; }
+  function band(v, edges){ for(let i=0;i<edges.length;i++){ if(v<=edges[i]) return i; } return edges.length; }
+
+  const LENS = {
+    richness: {
+      title:"Species richness",
+      cap:{h:"Species richness", p:"Greener, larger markers mean a busy, varied habitat. Amber tones mean lots of calls from only a few species."},
+      lo:"1 species", hi:"20+ species",
+      colours:()=>ramp5(),
+      colour:(m)=>ramp5()[band(m.richness,[3,7,11,16])],
+      legendRamp:()=>ramp5(),
+    },
+    native: {
+      title:"Native ratio",
+      cap:{h:"Native ratio", p:"Green = the community is almost all native. Clay/red flags a habitat where non-native species make up a big share."},
+      lo:"non-native heavy", hi:"all native",
+      colours:()=>["#BE5A38","#D08A47","#CDBB63","#5FA86E","#207A5A"].map(mixToken),
+      colour:(m)=> ["#BE5A38","#D08A47","#CDBB63","#5FA86E","#207A5A"].map(mixToken)[band(m.nativeRatio,[0.55,0.72,0.85,0.95])],
+      legendRamp:()=>["#BE5A38","#D08A47","#CDBB63","#5FA86E","#207A5A"].map(mixToken),
+    },
+    notable: {
+      title:"Notable & rare",
+      cap:{h:"Notable & rare species", p:"Violet marks habitats where a notable or rare species was heard — a nightingale, barn owl, or barbastelle bat. Grey = none in this window."},
+      lo:"none", hi:"present",
+      colours:()=>[css('--ink-faint'), css('--notable')],
+      colour:(m)=> m.notable>0 ? css('--notable') : css('--ink-faint'),
+      legendRamp:()=>[css('--ink-faint'), css('--ink-faint'), css('--notable'), css('--notable')],
+    },
+    health: {
+      title:"Biodiversity health",
+      cap:{h:"Biodiversity health index", p:"A 0–100 blend of richness, native share and rare-species presence. Transparent by design — tap a marker to see what drives it."},
+      lo:"0", hi:"100",
+      colours:()=>ramp5(),
+      colour:(m)=>ramp5()[band(m.health,[35,50,65,80])],
+      legendRamp:()=>ramp5(),
+    },
+  };
+  // keep raw lens hexes but nudge for dark theme legibility
+  function mixToken(hex){ return hex; }
+
+  // ---------- state ----------
+  let state = { win:"7d", lens:"richness", selected:null };
+
+  // ---------- marker rendering ----------
+  const layer = document.getElementById('markerLayer');
+
+  // ---------- pan & zoom ----------
+  const mapwrap = document.querySelector('.mapwrap');
+  const scene = document.getElementById('mapScene');
+  const view = { k:1, tx:0, ty:0 };
+
+  function clampView(){
+    const W=mapwrap.clientWidth, H=mapwrap.clientHeight;
+    view.k = Math.max(1, Math.min(6, view.k));
+    view.tx = Math.max(W - W*view.k, Math.min(0, view.tx));
+    view.ty = Math.max(H - H*view.k, Math.min(0, view.ty));
+  }
+  function positionMarkers(){
+    const W=mapwrap.clientWidth, H=mapwrap.clientHeight;
+    for(const el of layer.children){
+      const bx=parseFloat(el.dataset.bx), by=parseFloat(el.dataset.by);
+      el.style.left = (view.tx + (bx/100)*W*view.k) + 'px';
+      el.style.top  = (view.ty + (by/100)*H*view.k) + 'px';
+    }
+  }
+  function applyView(){
+    clampView();
+    scene.style.transform = 'translate('+view.tx+'px,'+view.ty+'px) scale('+view.k+')';
+    positionMarkers();
+  }
+  function zoomAt(factor, cx, cy){
+    const k1=view.k; const k2=Math.max(1, Math.min(6, k1*factor));
+    if(k2===k1) return;
+    view.tx = cx - (cx - view.tx)*(k2/k1);
+    view.ty = cy - (cy - view.ty)*(k2/k1);
+    view.k = k2; applyView();
+  }
+  // Wheel/pinch: zoom the MAP only when the pointer is over it; block browser
+  // page pinch-zoom everywhere else; never zoom or hijack the side panel.
+  document.addEventListener('wheel', function(e){
+    if(e.ctrlKey) e.preventDefault();            // stop trackpad pinch zooming the whole page
+    const overMap = e.target.closest && e.target.closest('.mapwrap');
+    if(!overMap) return;                         // over the panel: leave its normal scrolling alone
+    e.preventDefault();
+    const r=mapwrap.getBoundingClientRect();
+    zoomAt(e.deltaY<0?1.12:1/1.12, e.clientX-r.left, e.clientY-r.top);
+  }, {passive:false});
+
+  let panning=false, sx=0, sy=0, tx0=0, ty0=0;
+  function overChrome(t){ return t.closest('.marker')||t.closest('.overlay')||t.closest('.zoomctl'); }
+  mapwrap.addEventListener('pointerdown', function(e){
+    if(overChrome(e.target)) return;
+    panning=true; sx=e.clientX; sy=e.clientY; tx0=view.tx; ty0=view.ty;
+    mapwrap.setPointerCapture(e.pointerId);
+  });
+  mapwrap.addEventListener('pointermove', function(e){
+    if(!panning) return;
+    view.tx=tx0+(e.clientX-sx); view.ty=ty0+(e.clientY-sy);
+    if(Math.abs(e.clientX-sx)>3||Math.abs(e.clientY-sy)>3) mapwrap.classList.add('grabbing');
+    applyView();
+  });
+  function endPan(e){ if(!panning) return; panning=false; mapwrap.classList.remove('grabbing'); try{mapwrap.releasePointerCapture(e.pointerId);}catch(_){} }
+  mapwrap.addEventListener('pointerup', endPan);
+  mapwrap.addEventListener('pointercancel', endPan);
+  mapwrap.addEventListener('dblclick', function(e){
+    if(overChrome(e.target)) return;
+    const r=mapwrap.getBoundingClientRect();
+    zoomAt(1.6, e.clientX-r.left, e.clientY-r.top);
+  });
+  document.getElementById('zoomIn').addEventListener('click', ()=>zoomAt(1.4, mapwrap.clientWidth/2, mapwrap.clientHeight/2));
+  document.getElementById('zoomOut').addEventListener('click', ()=>zoomAt(1/1.4, mapwrap.clientWidth/2, mapwrap.clientHeight/2));
+  document.getElementById('zoomReset').addEventListener('click', ()=>{ view.k=1; view.tx=0; view.ty=0; applyView(); });
+  window.addEventListener('resize', ()=>applyView());
+  function radiusFor(activity, maxAct){
+    const t = maxAct>0 ? activity/maxAct : 0;
+    return 15 + Math.sqrt(t)*27; // 15..42 px, area-proportionate
+  }
+  function groupColour(g){ return g==="bat" ? css('--bats') : css('--birds'); }
+
+  function renderMarkers(){
+    const lens = LENS[state.lens];
+    const ms = SENSORS.map(s=>({ s, m: metrics(s, state.win) }));
+    const maxAct = Math.max(...ms.map(o=>o.m.activity), 1);
+    layer.innerHTML = "";
+    for(const {s,m} of ms){
+      const d = radiusFor(m.activity, maxAct);
+      const col = lens.colour(m);
+      const btn = document.createElement('button');
+      btn.className = "marker" + (state.selected===s.id ? " selected":"");
+      btn.dataset.bx = s.x; btn.dataset.by = s.y;
+      btn.setAttribute('aria-label', s.label+", "+m.richness+" species, "+m.activity+" detections");
+      btn.dataset.id = s.id;
+      const lensVal = state.lens==="health" ? m.health
+                    : state.lens==="native" ? Math.round(m.nativeRatio*100)+"% native"
+                    : state.lens==="notable" ? (m.notable+" notable")
+                    : m.richness+" species";
+      btn.innerHTML =
+        '<span class="ping"></span>'+
+        '<span class="dot" style="width:'+(d*2)+'px;height:'+(d*2)+'px;background:'+col+'"></span>'+
+        '<span class="tip"><b>'+s.label+'</b> · '+s.habitat+'<br><span class="tip-sub">'+m.richness+' species · '+m.activity+' calls · '+lensVal+'</span></span>';
+      btn.addEventListener('click', ()=>selectSensor(s.id));
+      layer.appendChild(btn);
+    }
+    positionMarkers();
+  }
+
+  function pulseMarker(id){
+    const el = layer.querySelector('.marker[data-id="'+id+'"]');
+    if(!el) return;
+    el.classList.remove('pulse'); void el.offsetWidth; el.classList.add('pulse');
+  }
+
+  // ---------- legend + caption ----------
+  function renderLegend(){
+    const lens = LENS[state.lens];
+    document.getElementById('legendTitle').textContent = lens.title;
+    document.getElementById('legendLo').textContent = lens.lo;
+    document.getElementById('legendHi').textContent = lens.hi;
+    const ramp = document.getElementById('legendRamp');
+    ramp.innerHTML = lens.legendRamp().map(c=>'<span style="background:'+c+'"></span>').join('');
+    document.getElementById('lensCap').innerHTML = '<strong>'+lens.cap.h+'</strong>'+lens.cap.p;
+  }
+
+  // ---------- SVG chart helpers ----------
+  function svgEl(w,h,extra){ return '<svg class="chart" viewBox="0 0 '+w+' '+h+'" '+(extra||'')+'>'; }
+
+  function barChart(series){
+    // series: {labels:[], values:[], accent}
+    const w=380,h=150, padL=6,padR=6,padB=22,padT=8;
+    const iw=w-padL-padR, ih=h-padT-padB;
+    const max=Math.max(...series.values,1);
+    const n=series.values.length; const gap=n>16?1.5:3;
+    const bw=(iw/n)-gap;
+    let s=svgEl(w,h,'role="img"');
+    // baseline
+    s+='<line class="gridline" x1="'+padL+'" y1="'+(padT+ih)+'" x2="'+(w-padR)+'" y2="'+(padT+ih)+'"/>';
+    const maxIdx=series.values.indexOf(max);
+    for(let i=0;i<n;i++){
+      const bh=(series.values[i]/max)*ih;
+      const x=padL+i*(bw+gap); const y=padT+ih-bh;
+      const fill = i===maxIdx ? 'var(--accent)' : 'color-mix(in srgb, var(--accent) 32%, var(--surface-3))';
+      s+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(bh,1).toFixed(1)+'" rx="2" fill="'+fill+'"/>';
+    }
+    // labels (sparse)
+    const step = Math.ceil(n/6);
+    for(let i=0;i<n;i+=step){
+      const x=padL+i*(bw+gap)+bw/2;
+      s+='<text class="axislbl" x="'+x.toFixed(1)+'" y="'+(h-6)+'" text-anchor="middle">'+series.labels[i]+'</text>';
+    }
+    s+='</svg>';
+    return s;
+  }
+
+  function lineChart(values, labels){
+    const w=380,h=140,padL=8,padR=10,padB=22,padT=10;
+    const iw=w-padL-padR, ih=h-padT-padB;
+    const max=Math.max(...values), min=Math.min(...values,0);
+    const n=values.length;
+    const X=i=>padL+(i/(n-1))*iw;
+    const Y=v=>padT+ih-((v-min)/((max-min)||1))*ih;
+    let pts=values.map((v,i)=>X(i).toFixed(1)+','+Y(v).toFixed(1));
+    let area='M'+X(0).toFixed(1)+','+(padT+ih)+' L'+pts.join(' L')+' L'+X(n-1).toFixed(1)+','+(padT+ih)+' Z';
+    let s=svgEl(w,h,'role="img"');
+    s+='<line class="gridline" x1="'+padL+'" y1="'+(padT+ih)+'" x2="'+(w-padR)+'" y2="'+(padT+ih)+'"/>';
+    s+='<path d="'+area+'" fill="color-mix(in srgb, var(--accent) 14%, transparent)"/>';
+    s+='<polyline points="'+pts.join(' ')+'" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    // endpoint
+    s+='<circle cx="'+X(n-1).toFixed(1)+'" cy="'+Y(values[n-1]).toFixed(1)+'" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>';
+    const step=Math.ceil(n/5);
+    for(let i=0;i<n;i+=step){ s+='<text class="axislbl" x="'+X(i).toFixed(1)+'" y="'+(h-6)+'" text-anchor="middle">'+labels[i]+'</text>'; }
+    s+='<text class="axislbl" x="'+X(n-1).toFixed(1)+'" y="'+(Y(values[n-1])-8).toFixed(1)+'" text-anchor="end" style="fill:var(--accent);font-weight:600">'+values[n-1]+'</text>';
+    s+='</svg>';
+    return s;
+  }
+
+  function dielDial(birds, bats){
+    const w=190,h=190,cx=95,cy=95, rIn=30, rOutB=88, rOutT=58;
+    const max=Math.max(...birds,...bats,1);
+    let s=svgEl(w,h,'role="img"');
+    // rings
+    s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rOutB+'" fill="none" stroke="var(--line)" stroke-width="1"/>';
+    s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+rIn+'" fill="none" stroke="var(--line)" stroke-width="1"/>';
+    function polar(r,hr){ const a=(hr/24)*2*Math.PI - Math.PI/2; return [cx+r*Math.cos(a), cy+r*Math.sin(a)]; }
+    // bat wedges (inner band, indigo)
+    for(let hleft=0;hleft<24;hleft++){
+      const frac=bats[hleft]/max; if(frac<=0.02) continue;
+      const r0=rIn, r1=rIn+(rOutT-rIn)*frac;
+      const [x0,y0]=polar(r0,hleft),[x1,y1]=polar(r0,hleft+1),[x2,y2]=polar(r1,hleft+1),[x3,y3]=polar(r1,hleft);
+      s+='<path d="M'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+r0+','+r0+' 0 0 1 '+x1.toFixed(1)+','+y1.toFixed(1)+' L'+x2.toFixed(1)+','+y2.toFixed(1)+' A'+r1.toFixed(1)+','+r1.toFixed(1)+' 0 0 0 '+x3.toFixed(1)+','+y3.toFixed(1)+' Z" fill="var(--bats)" opacity="0.9"/>';
+    }
+    // bird wedges (outer band, gold)
+    for(let hr=0;hr<24;hr++){
+      const frac=birds[hr]/max; if(frac<=0.02) continue;
+      const r0=rOutT+3, r1=rOutT+3+(rOutB-rOutT-3)*frac;
+      const [x0,y0]=polar(r0,hr),[x1,y1]=polar(r0,hr+1),[x2,y2]=polar(r1,hr+1),[x3,y3]=polar(r1,hr);
+      s+='<path d="M'+x0.toFixed(1)+','+y0.toFixed(1)+' A'+r0+','+r0+' 0 0 1 '+x1.toFixed(1)+','+y1.toFixed(1)+' L'+x2.toFixed(1)+','+y2.toFixed(1)+' A'+r1.toFixed(1)+','+r1.toFixed(1)+' 0 0 0 '+x3.toFixed(1)+','+y3.toFixed(1)+' Z" fill="var(--birds)" opacity="0.92"/>';
+    }
+    // hour ticks
+    [[0,"00"],[6,"06"],[12,"12"],[18,"18"]].forEach(([hr,lb])=>{
+      const [tx,ty]=polar(rOutB+11,hr);
+      s+='<text class="axislbl" x="'+tx.toFixed(1)+'" y="'+(ty+3).toFixed(1)+'" text-anchor="middle">'+lb+'</text>';
+    });
+    s+='<text x="'+cx+'" y="'+(cy-2)+'" text-anchor="middle" style="fill:var(--ink-faint);font-size:9px">dawn</text>';
+    s+='<text x="'+cx+'" y="'+(cy+9)+'" text-anchor="middle" style="fill:var(--ink-faint);font-size:9px">dusk</text>';
+    s+='</svg>';
+    return s;
+  }
+
+  // diel profiles: birds diurnal (dawn+eve peaks), bats nocturnal
+  function dielData(sensor, winKey){
+    const r=rngFor(sensor.id+"|diel|"+winKey);
+    const birds=[],bats=[];
+    for(let h=0;h<24;h++){
+      let b=0;
+      b += Math.exp(-Math.pow(h-6,2)/6)*10;   // dawn chorus
+      b += Math.exp(-Math.pow(h-18,2)/8)*6;   // evening
+      b += (h>7&&h<17? 2.5:0);
+      birds.push(Math.max(0, b*(0.7+0.6*r())));
+      let t=0;
+      t += Math.exp(-Math.pow(((h+3)%24)-3,2)/5)*8; // post-dusk ~21
+      t += (h>=21||h<=3? 4:0);
+      bats.push(Math.max(0, (h>=20||h<=4? t*(0.7+0.7*r()):0.2*r())));
+    }
+    return {birds,bats};
+  }
+
+  function activitySeries(sensor, winKey){
+    const w=WINDOWS[winKey]; const r=rngFor(sensor.id+"|act|"+winKey);
+    const total=metrics(sensor,winKey).activity;
+    let n,labels;
+    if(w.kind==="hourly"){ n=24; labels=Array.from({length:24},(_,i)=>((i%6===0)?String(i).padStart(2,'0'):'')); }
+    else if(w.kind==="daily7"){ n=7; labels=["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]; }
+    else if(w.kind==="daily30"){ n=30; labels=Array.from({length:30},(_,i)=>((i%5===0)?String(i+1):'')); }
+    else { n=6; labels=["Feb","Mar","Apr","May","Jun","Jul"]; }
+    // shape
+    let raw=[];
+    for(let i=0;i<n;i++){
+      let s=0.5+r();
+      if(w.kind==="hourly"){ s= (Math.exp(-Math.pow(i-6,2)/8)+Math.exp(-Math.pow(i-19,2)/10)+ (i>=21||i<=3?0.5:0.15))*(0.7+0.6*r()); }
+      raw.push(s);
+    }
+    const sum=raw.reduce((a,b)=>a+b,0)||1;
+    const values=raw.map(v=>Math.round(v/sum*total));
+    return {labels,values};
+  }
+
+  function richnessTrend(sensor){
+    const r=rngFor(sensor.id+"|trend");
+    const labels=["Feb","","Mar","","Apr","","May","","Jun","","Jul",""];
+    const base=metrics(sensor,"7d").richness;
+    const vals=[]; let cur=Math.max(2,Math.round(base*0.45));
+    for(let i=0;i<12;i++){ cur += (base-cur)*0.12 + (r()-0.4)*1.6; vals.push(Math.max(1,Math.round(cur))); }
+    vals[11]=base;
+    return {labels,values:vals};
+  }
+
+  // ---------- panel rendering ----------
+  const panel = document.getElementById('panel');
+
+  function fmt(n){ return n.toLocaleString('en-GB'); }
+
+  function overviewPanel(){
+    const ms=SENSORS.map(s=>({s,m:metrics(s,state.win)}));
+    const allSpecies=new Set(); let totalDet=0, totalNat=0, totalPresent=0, totalNotable=0;
+    ms.forEach(({m})=>{ m.present.forEach(p=>allSpecies.add(p.name)); totalDet+=m.activity; totalNat+=m.natives; totalPresent+=m.richness; totalNotable+=m.notable; });
+    const nativePct=totalPresent? Math.round(totalNat/totalPresent*100):100;
+    const richest=[...ms].sort((a,b)=>b.m.richness-a.m.richness)[0];
+    const busiest=[...ms].sort((a,b)=>b.m.activity-a.m.activity)[0];
+    const winL=WINDOWS[state.win].label;
+    // farm trend = avg richness trend
+    const trend=richnessTrend(SENSORS[0]); // representative
+    panel.innerHTML =
+      '<div class="p-head"><div class="titles">'+
+        '<div class="p-eyebrow">Farm overview · '+winL+'</div>'+
+        '<h1 class="p-title">Willowmere Farm</h1>'+
+        '<span class="chip"><span class="live-pill"><span class="blip"></span>Live · 6 sensors reporting</span></span>'+
+      '</div></div>'+
+      '<div class="tiles">'+
+        tile('Species heard', allSpecies.size)+
+        tile('Detections', fmt(totalDet))+
+        tile('Native share', nativePct, '%')+
+        tile('Notable', totalNotable)+
+      '</div>'+
+      '<div class="callout">'+
+        '<div class="c"><div class="k">Richest habitat</div><div class="big">'+richest.s.label+'</div><div class="sm">'+richest.m.richness+' species · '+richest.s.habitat+'</div></div>'+
+        '<div class="c"><div class="k">Busiest habitat</div><div class="big">'+busiest.s.label+'</div><div class="sm">'+fmt(busiest.m.activity)+' detections</div></div>'+
+      '</div>'+
+      '<div class="block"><h3>Farm diversity trend<span class="hint">species / week</span></h3>'+
+        '<div class="chartbox">'+lineChart(trend.values,trend.labels)+'</div></div>'+
+      '<div class="block"><h3>Live activity<span class="live-pill"><span class="blip"></span>streaming</span></h3>'+
+        '<div class="ticker" id="ticker"></div></div>'+
+      '<div class="hintline">'+cursorIcon()+'Select any sensor on the map to explore its species, daily rhythm and trend.</div>'+
+      '<div class="footnote">Illustrative demo with synthetic detections. In production, markers and charts are driven by live detections streaming from field sensors over MQTT, backed by the detection history in Postgres.</div>';
+    startTicker(null);
+  }
+
+  function tile(k,v,unit){ return '<div class="tile"><div class="k">'+k+'</div><div class="v">'+v+(unit?'<small>'+unit+'</small>':'')+'</div></div>'; }
+
+  function sensorPanel(id){
+    const s=SENSORS.find(x=>x.id===id); const m=metrics(s,state.win);
+    const winL=WINDOWS[state.win].label;
+    const diel=dielData(s,state.win); const act=activitySeries(s,state.win); const trend=richnessTrend(s);
+    const maxDet=Math.max(...m.present.map(p=>p.det),1);
+    const speciesRows=m.present.slice(0,9).map(p=>{
+      const gc=groupColour(p.group);
+      let tag='';
+      if(!p.native) tag='<span class="tag nonnat">non-native</span>';
+      else if(p.notable) tag='<span class="tag notab">notable</span>';
+      return '<div class="sp-row">'+
+        '<div class="sp-name"><span class="gdot" style="background:'+gc+'"></span><span class="nm">'+p.name+'</span>'+tag+'</div>'+
+        '<div class="sp-count">'+fmt(p.det)+'</div>'+
+        '<div class="sp-bar"><i style="width:'+Math.max(4,p.det/maxDet*100)+'%;background:'+gc+'"></i></div>'+
+      '</div>';
+    }).join('');
+    const moreN = m.present.length-9;
+
+    panel.innerHTML =
+      '<div class="p-head"><div class="titles">'+
+        '<div class="p-eyebrow">Sensor · '+winL+'</div>'+
+        '<h1 class="p-title">'+s.label+'</h1>'+
+        '<span class="chip"><span class="swatch" style="background:var(--accent)"></span>'+s.habitat+' · last call 3 min ago</span>'+
+      '</div><button class="closebtn" id="closeP" aria-label="Back to farm overview">&times;</button></div>'+
+      '<div class="tiles">'+
+        tile('Species', m.richness)+
+        tile('Detections', fmt(m.activity))+
+        tile('Native', Math.round(m.nativeRatio*100),'%')+
+        tile('Health', m.health)+
+      '</div>'+
+      '<div class="block"><h3>Species composition<span class="hint">birds <span style="color:var(--birds)">●</span> · bats <span style="color:var(--bats)">●</span></span></h3>'+
+        '<div class="species">'+speciesRows+'</div>'+
+        (moreN>0?'<div class="hintline" style="margin-top:12px">+ '+moreN+' more species below the confidence threshold shown when you zoom in.</div>':'')+
+      '</div>'+
+      '<div class="block"><h3>Activity over time<span class="hint">detections · '+winL+'</span></h3>'+
+        '<div class="chartbox">'+barChart({labels:act.labels,values:act.values})+'</div></div>'+
+      '<div class="block"><h3>Daily rhythm<span class="hint">calls by hour</span></h3>'+
+        '<div class="chartbox"><div class="diel-wrap">'+dielDial(diel.birds,diel.bats)+
+          '<div class="diel-legend">'+
+            '<div class="lk"><i style="background:var(--birds)"></i>Birds</div>'+
+            '<div class="lk"><i style="background:var(--bats)"></i>Bats</div>'+
+            '<div class="note">Birds peak at the dawn chorus; bats emerge after dusk.</div>'+
+          '</div></div></div></div>'+
+      '<div class="block"><h3>Diversity trend<span class="hint">species / week</span></h3>'+
+        '<div class="chartbox">'+lineChart(trend.values,trend.labels)+'</div></div>'+
+      '<div class="block"><h3>Recent detections<span class="live-pill"><span class="blip"></span>live</span></h3>'+
+        '<div class="ticker" id="ticker"></div></div>';
+    document.getElementById('closeP').addEventListener('click', ()=>selectSensor(null));
+    startTicker(id);
+  }
+
+  function cursorIcon(){ return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l7.5 18 2.5-8 8-2.5z"/></svg>'; }
+
+  // ---------- live ticker (simulated MQTT) ----------
+  let tickerTimer=null;
+  function startTicker(sensorId){
+    if(tickerTimer) clearInterval(tickerTimer);
+    const box=document.getElementById('ticker'); if(!box) return;
+    const pool = sensorId ? [SENSORS.find(s=>s.id===sensorId)] : SENSORS;
+    function emit(initial){
+      const s = pool[Math.floor(Math.random()*pool.length)];
+      const present = speciesPresence(s, state.win);
+      if(!present.length) return;
+      const p = present[Math.floor(Math.random()*Math.min(present.length,6))];
+      const gc = groupColour(p.group);
+      const now=new Date();
+      const t = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+      const row=document.createElement('div');
+      row.className='tk-row';
+      row.innerHTML='<span class="gdot" style="background:'+gc+'"></span>'+
+        '<span class="tk-sp">'+p.name+(sensorId?'':' <span class="where">· '+s.label+'</span>')+'</span>'+
+        '<span class="tk-t">'+t+'</span>';
+      box.prepend(row);
+      while(box.children.length>7) box.removeChild(box.lastChild);
+      if(!initial) pulseMarker(s.id);
+    }
+    for(let i=0;i<4;i++) emit(true);
+    tickerTimer=setInterval(emit, 3800);
+  }
+
+  // ---------- interactions ----------
+  function selectSensor(id){
+    state.selected = id;
+    renderMarkers();
+    if(id) sensorPanel(id); else overviewPanel();
+  }
+
+  document.getElementById('windowSeg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    state.win=b.dataset.win;
+    [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderMarkers();
+    if(state.selected) sensorPanel(state.selected); else overviewPanel();
+  });
+  document.getElementById('lensSeg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    state.lens=b.dataset.lens;
+    [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed', x===b));
+    renderMarkers(); renderLegend();
+  });
+
+  // react to theme changes (re-render for token-based colours)
+  const mo=new MutationObserver(()=>{ renderMarkers(); renderLegend(); });
+  mo.observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+  if(window.matchMedia){ try{ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{renderMarkers();renderLegend();}); }catch(e){} }
+
+  // ---------- init ----------
+  renderMarkers(); renderLegend(); overviewPanel();
+})();
+</script>
+<script>
+(function(){
+  var root=document.documentElement;
+  var bar=document.querySelector('.topbar');
+  if(bar){
+    var btn=document.createElement('button');
+    btn.id='themeToggle'; btn.type='button'; btn.textContent='◑ Theme';
+    btn.style.alignSelf='center';
+    btn.addEventListener('click',function(){
+      var cur=root.getAttribute('data-theme');
+      var next = cur==='dark' ? 'light' : cur==='light' ? 'dark'
+        : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'light':'dark');
+      root.setAttribute('data-theme',next);
+    });
+    bar.appendChild(btn);
+  }
+})();
+</script>
+</body>
+</html>
