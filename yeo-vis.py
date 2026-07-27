@@ -39,6 +39,8 @@ time_options = {
 selected_time_label = st.sidebar.selectbox("Time Range", options=list(time_options.keys()), index=2)
 selected_time_val = time_options[selected_time_label]
 
+confidence_threshold = st.sidebar.slider("Confidence Threshold", min_value=0.0, max_value=1.0, value=0.6, step=0.05)
+
 st.sidebar.divider()
 
 # --- HEARTBEAT QUERY ---
@@ -76,21 +78,21 @@ flux_query = f'''
 from(bucket: "{BUCKET}")
   |> range(start: {selected_time_val})
   |> filter(fn: (r) => r["_measurement"] == "acoupi_detections")
-  |> filter(fn: (r) => r["_field"] == "value" or r["_field"] == "confidence" or r["_field"] == "detection_score")
+  |> filter(fn: (r) => r["_field"] == "value" or r["_field"] == "confidence" or r["_field"] == "confidence_score" or r["_field"] == "detection_score")
   |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
 '''
 
 df = query_api.query_data_frame(flux_query)
 
 if not df.empty:
-    # Handle naming inconsistency between 'confidence' and 'detection_score'
+    # Handle naming inconsistency between 'confidence', 'confidence_score', and 'detection_score'
     # This prevents the KeyError crash
-    possible_conf_cols = ["confidence", "detection_score"]
+    possible_conf_cols = ["confidence", "confidence_score", "detection_score"]
     conf_col = next((c for c in possible_conf_cols if c in df.columns), None)
 
     if conf_col:
         # 1. Filter for high-confidence detections
-        df = df[df[conf_col] >= 0.6]
+        df = df[df[conf_col] >= confidence_threshold]
 
         if not df.empty:
             # 2. Rename and format
@@ -114,7 +116,7 @@ if not df.empty:
             df = df[df["Species"].isin(top_species)]
 
             # --- ROW 1: Full Width Timeline ---
-            st.subheader("High Confidence Activity Timeline (>0.6)")
+            st.subheader(f"High Confidence Activity Timeline (>{confidence_threshold})")
             hover_cols = ["Confidence", "topic"] if "topic" in df.columns else ["Confidence"]
             fig = px.scatter(df, 
                              x="Time", 
@@ -183,7 +185,7 @@ if not df.empty:
                 recent["Time"] = recent["Time"].dt.strftime('%H:%M:%S')
                 st.dataframe(recent, hide_index=True, use_container_width=True)
         else:
-            st.info("Detections exist, but none meet the 0.6 confidence threshold.")
+            st.info(f"Detections exist, but none meet the {confidence_threshold} confidence threshold.")
     else:
         st.error(f"Data found, but no confidence field detected. Columns: {df.columns.tolist()}")
 else:
