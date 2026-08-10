@@ -78,26 +78,42 @@ flux_query = f'''
 from(bucket: "{BUCKET}")
   |> range(start: {selected_time_val})
   |> filter(fn: (r) => r["_measurement"] == "acoupi_detections")
-  |> filter(fn: (r) => r["_field"] == "value" or r["_field"] == "confidence" or r["_field"] == "confidence_score" or r["_field"] == "detection_score")
+  |> filter(fn: (r) => r["_field"] == "value" or r["_field"] == "confidence" or r["_field"] == "confidence_score" or r["_field"] == "detection_score" or r["_field"] == "s" or r["_field"] == "c" or r["_field"] == "label" or r["_field"] == "species")
   |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
 '''
 
 df = query_api.query_data_frame(flux_query)
 
-if not df.empty:
-    # Handle naming inconsistency between 'confidence', 'confidence_score', and 'detection_score'
-    # This prevents the KeyError crash
-    possible_conf_cols = ["confidence", "confidence_score", "detection_score"]
-    conf_col = next((c for c in possible_conf_cols if c in df.columns), None)
+if type(df) is list:
+    df = pd.concat(df, ignore_index=True) if len(df) > 0 else pd.DataFrame()
 
-    if conf_col:
+if not df.empty:
+    # Handle naming inconsistencies across message formats:
+    # Species / Sound: 'value', 'label', 'species', 's'
+    # Confidence: 'confidence', 'confidence_score', 'detection_score', 'c'
+    if "Species" not in df.columns:
+        df["Species"] = pd.Series(index=df.index, dtype="object")
+        for col in ["value", "label", "species", "s"]:
+            if col in df.columns:
+                valid_val = df[col].astype(str).replace({"nan": None, "None": None, "": None})
+                df["Species"] = df["Species"].fillna(valid_val)
+
+    if "Confidence" not in df.columns:
+        df["Confidence"] = pd.Series(index=df.index, dtype="float64")
+        for col in ["confidence", "confidence_score", "detection_score", "c"]:
+            if col in df.columns:
+                df["Confidence"] = df["Confidence"].fillna(pd.to_numeric(df[col], errors="coerce"))
+
+    if df["Confidence"].notnull().any() and df["Species"].notnull().any():
         # 1. Filter for high-confidence detections
-        df = df[df[conf_col] >= confidence_threshold]
+        df = df[df["Confidence"] >= confidence_threshold]
 
         if not df.empty:
-            # 2. Rename and format
-            df = df.rename(columns={"_time": "Time", "value": "Species", conf_col: "Confidence"})
-            df["Time"] = pd.to_datetime(df["Time"])
+            # 2. Format Time column
+            if "_time" in df.columns:
+                df["Time"] = pd.to_datetime(df["_time"])
+            elif "Time" in df.columns:
+                df["Time"] = pd.to_datetime(df["Time"])
             
             # --- DEVICE SELECTION ---
             if "topic" in df.columns:
@@ -187,6 +203,6 @@ if not df.empty:
         else:
             st.info(f"Detections exist, but none meet the {confidence_threshold} confidence threshold.")
     else:
-        st.error(f"Data found, but no confidence field detected. Columns: {df.columns.tolist()}")
+        st.error(f"Data found, but required confidence or species fields could not be resolved. Columns: {df.columns.tolist()}")
 else:
     st.warning(f"No bird data found for: {selected_time_label}. (Check measurement: acoupi_detections)")
