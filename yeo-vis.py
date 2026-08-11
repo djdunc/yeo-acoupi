@@ -191,23 +191,26 @@ def resolve_species(val):
 # --- DISCOVER KNOWN DEVICES ---
 @st.cache_data(ttl=180)
 def fetch_known_devices():
-    """Fetches unique device identifiers from InfluxDB tags."""
+    """Fetches unique device identifiers with active data from InfluxDB."""
     q = f'''
-    import "influxdata/influxdb/schema"
-    schema.tagValues(bucket: "{BUCKET}", tag: "device_id", start: -30d)
+    from(bucket: "{BUCKET}")
+      |> range(start: -30d)
+      |> keep(columns: ["device_id"])
+      |> distinct(column: "device_id")
     '''
     try:
         res = query_api.query_data_frame(q)
         if isinstance(res, list):
             res = pd.concat(res, ignore_index=True) if len(res) > 0 else pd.DataFrame()
-        if not res.empty and "_value" in res.columns:
-            devs = res["_value"].dropna().unique().tolist()
-            named_devs = [d for d in devs if not d.isdigit() or len(d) <= 6 or d.startswith("uno")]
-            other_devs = [d for d in devs if d.isdigit() and len(d) > 6 and not d.startswith("uno")]
-            return sorted(named_devs) + sorted(other_devs)
+        if not res.empty:
+            col = "device_id" if "device_id" in res.columns else ("_value" if "_value" in res.columns else None)
+            if col:
+                devs = [str(d).strip() for d in res[col].dropna().unique().tolist() if str(d).strip()]
+                named_devs = [d for d in devs if not d.isdigit() or len(d) <= 6 or d.lower().startswith("uno")]
+                return sorted(named_devs)
     except Exception:
         pass
-    return ["unoq-4-cellular", "unoq-2", "unoq-bat", "uno4-cellular"]
+    return ["uno4-cellular", "unoq-2", "unoq-4-cellular", "unoq-bat"]
 
 known_devices = fetch_known_devices()
 
