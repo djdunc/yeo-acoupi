@@ -188,9 +188,44 @@ def resolve_species(val):
         "category": "Other"
     }
 
+# --- DISCOVER KNOWN DEVICES ---
+@st.cache_data(ttl=180)
+def fetch_known_devices():
+    """Fetches unique device identifiers from InfluxDB tags."""
+    q = f'''
+    import "influxdata/influxdb/schema"
+    schema.tagValues(bucket: "{BUCKET}", tag: "device_id", start: -30d)
+    '''
+    try:
+        res = query_api.query_data_frame(q)
+        if isinstance(res, list):
+            res = pd.concat(res, ignore_index=True) if len(res) > 0 else pd.DataFrame()
+        if not res.empty and "_value" in res.columns:
+            devs = res["_value"].dropna().unique().tolist()
+            named_devs = [d for d in devs if not d.isdigit() or len(d) <= 6 or d.startswith("uno")]
+            other_devs = [d for d in devs if d.isdigit() and len(d) > 6 and not d.startswith("uno")]
+            return sorted(named_devs) + sorted(other_devs)
+    except Exception:
+        pass
+    return ["unoq-4-cellular", "unoq-2", "unoq-bat", "uno4-cellular"]
+
+known_devices = fetch_known_devices()
+
 # --- SIDEBAR CONTROLS ---
 st.sidebar.markdown("## ⚙️ Dashboard Controls")
 
+# 1. Device Selection Dropdown (Placed ABOVE Time Selector)
+device_options = ["All Devices"] + known_devices
+if "device_select_key" not in st.session_state:
+    st.session_state["device_select_key"] = "All Devices"
+
+selected_device = st.sidebar.selectbox(
+    "Device Selection",
+    options=device_options,
+    key="device_select_key"
+)
+
+# 2. Time Window Selector
 time_options = {
     "Last 24 Hours": "-24h",
     "Last 2 Days": "-2d",
@@ -198,22 +233,40 @@ time_options = {
     "Last 14 Days": "-14d",
     "Last 30 Days": "-30d"
 }
-selected_time_label = st.sidebar.selectbox("Time Window", options=list(time_options.keys()), index=2)
+time_labels = list(time_options.keys())
+
+if "time_window_key" not in st.session_state:
+    st.session_state["time_window_key"] = "Last 7 Days"
+
+selected_time_label = st.sidebar.selectbox(
+    "Time Window",
+    options=time_labels,
+    key="time_window_key"
+)
 selected_time_val = time_options[selected_time_label]
+
+# 3. Confidence Threshold (Default 0.50, state-persisted)
+if "conf_threshold_key" not in st.session_state:
+    st.session_state["conf_threshold_key"] = 0.50
 
 confidence_threshold = st.sidebar.slider(
     "Confidence Threshold",
     min_value=0.0,
     max_value=1.0,
-    value=0.60,
+    value=st.session_state["conf_threshold_key"],
     step=0.05,
+    key="conf_threshold_key",
     help="Filter detections below this model confidence score"
 )
+
+# 4. Taxa / Category Filter
+if "category_filter_key" not in st.session_state:
+    st.session_state["category_filter_key"] = "All Species (Birds & Bats)"
 
 category_filter = st.sidebar.selectbox(
     "Taxa / Category Filter",
     options=["All Species (Birds & Bats)", "Birds Only 🐦", "Bats Only 🦇", "All Detections (incl. Other)"],
-    index=0
+    key="category_filter_key"
 )
 
 st.sidebar.divider()
@@ -239,10 +292,8 @@ hb_df = fetch_heartbeat_data()
 
 # Process Heartbeat Data
 active_devices_count = 0
-device_hb_summary = {}
 
 if not hb_df.empty:
-    # Resolve device identifier
     if "device_id" in hb_df.columns:
         hb_df["Device"] = hb_df["device_id"].fillna(hb_df.get("topic", "unknown"))
     else:
@@ -274,7 +325,6 @@ if not hb_df.empty:
             st.sidebar.markdown(f"**{status_icon} `{dev_name}`**: {status_text}  \n<small>Last: {time_str}</small>", unsafe_allow_html=True)
             active_devices_count += 1
             
-        # Sparkline of Heartbeat frequency
         spark_df = hb_df.set_index("_time").resample("1h").size().reset_index(name="Pulses")
         st.sidebar.markdown("**Heartbeats / Hour**")
         st.sidebar.line_chart(spark_df, x="_time", y="Pulses", height=130)
@@ -350,10 +400,7 @@ df["Category"] = [m["category"] for m in resolved_meta]
 # Drop records missing confidence or common name
 df = df.dropna(subset=["Confidence", "Common_Name"])
 
-# 5. Device Filter in Sidebar (now that devices are extracted)
-available_devices = sorted(df["Device"].dropna().unique().tolist())
-selected_device = st.sidebar.selectbox("Device Selection", options=["All Devices"] + available_devices, index=0)
-
+# 5. Apply Device Filter
 if selected_device != "All Devices":
     df = df[df["Device"] == selected_device]
 
@@ -389,14 +436,13 @@ if high_conf_df.empty:
     st.info(f"Detections exist for this selection, but none meet the confidence threshold of {confidence_threshold:.2f}.")
     st.stop()
 
-# --- TIMELINE VISUALIZATION ---
+# --- TIMELINE VISUALIZATION (FULL WIDTH) ---
 st.subheader(f"📈 Species Activity Timeline (Confidence ≥ {confidence_threshold:.2f})")
 
 # Limit to top 15 species for timeline visual clarity
 top_timeline_species = high_conf_df["Common_Name"].value_counts().nlargest(15).index.tolist()
 plot_df = high_conf_df[high_conf_df["Common_Name"].isin(top_timeline_species)].copy()
 
-# Sort species by category and frequency
 species_order = plot_df["Common_Name"].value_counts().index.tolist()
 
 fig_timeline = px.scatter(
@@ -458,68 +504,77 @@ st.plotly_chart(fig_timeline, use_container_width=True)
 
 st.divider()
 
-# --- ROW 2: LEADERBOARD & DIURNAL/NOCTURNAL DISTRIBUTION ---
-col_left, col_right = st.columns([1, 1])
+# --- SPECIES LEADERBOARD (FULL PANEL WIDTH) ---
+st.subheader("Species Leaderboard")
+leaderboard = high_conf_df.groupby(["Common_Name", "Scientific_Name", "Category"]).agg(
+    Count=("Common_Name", "count"),
+    Max_Confidence=("Confidence", "max"),
+    Avg_Confidence=("Confidence", "mean")
+).sort_values(by="Count", ascending=False).reset_index()
 
-with col_left:
-    st.subheader("🏆 Species Leaderboard")
-    leaderboard = high_conf_df.groupby(["Common_Name", "Scientific_Name", "Category"]).agg(
-        Count=("Common_Name", "count"),
-        Max_Confidence=("Confidence", "max"),
-        Avg_Confidence=("Confidence", "mean")
-    ).sort_values(by="Count", ascending=False).reset_index()
-    
-    leaderboard["Max_Confidence"] = leaderboard["Max_Confidence"].apply(lambda x: f"{x:.2f}")
-    leaderboard["Avg_Confidence"] = leaderboard["Avg_Confidence"].apply(lambda x: f"{x:.2f}")
-    
-    st.dataframe(
-        leaderboard,
-        column_config={
-            "Common_Name": st.column_config.TextColumn("Common Name", width="medium"),
-            "Category": st.column_config.TextColumn("Category", width="small"),
-            "Scientific_Name": st.column_config.TextColumn("Scientific Name", width="medium"),
-            "Count": st.column_config.ProgressColumn(
-                "Detections",
-                format="%d",
-                min_value=0,
-                max_value=int(leaderboard["Count"].max()) if not leaderboard.empty else 100
-            ),
-            "Max_Confidence": st.column_config.TextColumn("Max Conf", width="small"),
-            "Avg_Confidence": st.column_config.TextColumn("Avg Conf", width="small"),
-        },
-        hide_index=True,
-        use_container_width=True,
-        height=380
-    )
+leaderboard["Max_Confidence"] = leaderboard["Max_Confidence"].apply(lambda x: f"{x:.2f}")
+leaderboard["Avg_Confidence"] = leaderboard["Avg_Confidence"].apply(lambda x: f"{x:.2f}")
 
-with col_right:
-    st.subheader("⏰ Diurnal & Nocturnal Activity Profile")
-    dist_df = high_conf_df.copy()
-    dist_df["Hour"] = dist_df["Time"].dt.hour
-    
-    hourly_counts = dist_df.groupby(["Hour", "Category"]).size().reset_index(name="Count")
-    
-    fig_hourly = px.bar(
-        hourly_counts,
-        x="Hour",
-        y="Count",
-        color="Category",
-        color_discrete_map={"Bird": "#2b8a3e", "Bat": "#5f3dc4", "Other": "#868e96"},
-        barmode="stack",
-        template="plotly_white",
-        labels={"Hour": "Hour of Day (0-23 UTC)", "Count": "Detections"},
-        height=380
-    )
-    fig_hourly.update_layout(
-        margin=dict(l=0, r=0, t=20, b=10),
-        xaxis=dict(tickmode="linear", tick0=0, dtick=2),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-    )
-    st.plotly_chart(fig_hourly, use_container_width=True)
+st.dataframe(
+    leaderboard,
+    column_config={
+        "Common_Name": st.column_config.TextColumn("Common Name", width="medium"),
+        "Category": st.column_config.TextColumn("Category", width="small"),
+        "Scientific_Name": st.column_config.TextColumn("Scientific Name", width="medium"),
+        "Count": st.column_config.ProgressColumn(
+            "Detections",
+            format="%d",
+            min_value=0,
+            max_value=int(leaderboard["Count"].max()) if not leaderboard.empty else 100
+        ),
+        "Max_Confidence": st.column_config.TextColumn("Max Conf", width="small"),
+        "Avg_Confidence": st.column_config.TextColumn("Avg Conf", width="small"),
+    },
+    hide_index=True,
+    use_container_width=True,
+    height=400
+)
 
 st.divider()
 
-# --- ROW 3: RECENT DETECTIONS & TELEMETRY TABS ---
+# --- DIURNAL & NOCTURNAL ACTIVITY PROFILE (FULL PANEL WIDTH) ---
+st.subheader("Diurnal & Nocturnal Activity Profile (24-Hour Distribution)")
+dist_df = high_conf_df.copy()
+dist_df["Hour"] = dist_df["Time"].dt.hour
+
+hourly_counts = dist_df.groupby(["Hour", "Category"]).size().reset_index(name="Count")
+
+# Ensure all 24 hours (0-23) are represented
+all_hours_df = pd.DataFrame({"Hour": list(range(24))})
+categories_present = hourly_counts["Category"].unique() if not hourly_counts.empty else ["Bird", "Bat"]
+full_grid = []
+for h in range(24):
+    for cat in categories_present:
+        full_grid.append({"Hour": h, "Category": cat})
+full_grid_df = pd.DataFrame(full_grid)
+hourly_merged = pd.merge(full_grid_df, hourly_counts, on=["Hour", "Category"], how="left").fillna(0)
+
+fig_hourly = px.bar(
+    hourly_merged,
+    x="Hour",
+    y="Count",
+    color="Category",
+    color_discrete_map={"Bird": "#2b8a3e", "Bat": "#5f3dc4", "Other": "#868e96"},
+    barmode="stack",
+    template="plotly_white",
+    labels={"Hour": "Hour of Day (00:00 - 23:00 UTC)", "Count": "Detections Count"},
+    height=400
+)
+fig_hourly.update_layout(
+    margin=dict(l=0, r=0, t=20, b=10),
+    xaxis=dict(tickmode="linear", tick0=0, dtick=1),
+    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+)
+st.plotly_chart(fig_hourly, use_container_width=True)
+
+st.divider()
+
+# --- RECENT DETECTIONS & TELEMETRY TABS ---
 tab_recent, tab_telemetry, tab_species_ref = st.tabs(["🕒 Recent Detections Feed", "📊 Hardware & System Telemetry", "📖 Species Reference List"])
 
 with tab_recent:
@@ -543,15 +598,13 @@ with tab_recent:
         },
         hide_index=True,
         use_container_width=True,
-        height=320
+        height=350
     )
 
 with tab_telemetry:
     st.subheader("Hardware Telemetry (Cellular & Wi-Fi Nodes)")
     if not hb_df.empty and ("cpu" in hb_df.columns or "mem_free" in hb_df.columns or "shm" in hb_df.columns):
         telemetry_df = hb_df.dropna(subset=["_time"]).copy()
-        
-        # Filter for devices reporting numeric telemetry
         t_cols = [c for c in ["cpu", "mem_free", "mem_used", "shm"] if c in telemetry_df.columns]
         valid_telemetry = telemetry_df.dropna(subset=t_cols, how="all")
         
@@ -618,5 +671,5 @@ with tab_species_ref:
         },
         hide_index=True,
         use_container_width=True,
-        height=320
+        height=350
     )
