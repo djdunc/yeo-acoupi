@@ -1,0 +1,208 @@
+species_id,class_name,common_name,species
+0,Accipiter nisus_Eurasian Sparrowhawk,Sparrowhawk,Accipiter nisus
+1,Acrocephalus palustris_Marsh Warbler,Marsh Warbler,Acrocephalus palustris
+2,Acrocephalus schoenobaenus_Sedge Warbler,Sedge Warbler,Acrocephalus schoenobaenus
+3,Acrocephalus scirpaceus_Eurasian Reed Warbler,Reed Warbler,Acrocephalus scirpaceus
+4,Actitis hypoleucos_Common Sandpiper,Common Sandpiper,Actitis hypoleucos
+5,Aegithalos caudatus_Long-tailed Tit,Long-tailed Tit,Aegithalos caudatus
+6,Aix galericulata_Mandarin Duck,Mandarin Duck,Aix galericulata
+7,Alauda arvensis_Eurasian Skylark,Skylark,Alauda arvensis
+8,Alcedo atthis_Common Kingfisher,Kingfisher,Alcedo atthis
+9,Alectoris rufa_Red-legged Partridge,Red-legged Partridge,Alectoris rufa
+10,Alopochen aegyptiaca_Egyptian Goose,Egyptian Goose,Alopochen aegyptiaca
+11,Anas acuta_Northern Pintail,Pintail,Anas acuta
+12,Anas platyrhynchos_Mallard,Mallard,Anas platyrhynchos
+13,Anser albifrons_Greater White-fronted Goose,White-fronted Goose,Anser albifrons
+14,Anser anser_Graylag Goose,Greylag Goose,Anser anser
+15,Anser brachyrhynchus_Pink-footed Goose,Pink-footed Goose,Anser brachyrhynchus
+16,Anser serrirostris_Tundra Bean-Goose,Tundra Bean Goose,Anser serrirostris
+17,Anthus campestris_Tawny Pipit,Tawny Pipit,Anthus campestris
+18,Anthus spinoletta_Water Pipit,Water Pipit,Anthus spinoletta
+19,Apus apus_Common Swift,Swift,Apus apus
+20,Aquila chrysaetos_Golden Eagle,Golden Eagle,Aquila chrysaetos
+21,Ardea alba_Great Egret,Great White Egret,Ardea alba
+22,Ardea cinerea_Gray Heron,Grey Heron,Ardea cinerea
+23,Ardea purpurea_Purple Heron,Purple Heron,Ardea purpurea
+24,Arenaria interpres_Ruddy Turnstone,Turnstone,Arenaria interpres
+25,Asio flammeus_Short-eared Owl,Short-eared Owl,Asio flammeus
+26,Asio otus_Long-eared Owl,Long-eared Owl,Asio otus
+27,Athene noctua_Little Owl,Little Owl,Athene noctua
+28,Aythya collaris_Ring-necked Duck,Ring-necked Duck,Aythya collaris
+29,Aythya ferina_Common Pochard,Pochard,Aythya ferina
+30,Aythya marila_Greater Scaup,Scaup,Aythya marila
+31,Aythya nyroca_Ferruginous Duck,Ferruginous Duck,Aythya nyroca
+32,Bombycilla garrulus_Bohemian Waxwing,Waxwing,Bombycilla garrulus
+33,Botaurus stellaris_Great Bittern,Bittern,Botaurus stellaris
+34,Branta bernicla_Brant,Brent Goose,Branta bernicla
+35,Branta canadensis_Canada Goose,Canada Goose,Branta canadensis
+36,Branta leucopsis_Barnacle Goose,Barnacle Goose,Branta leucopsis
+37,Burhinus oedicnemus_Eurasian Thick-knee,Stone-curlew,Burhinus oedicnemus
+38,Buteo buteo_Common Buzzard,Buzzard,Buteo buteo
+39,Calidris alpina_Dunlin,Dunlin,Calidris alpina
+40,Calidris canutus_Red Knot,Knot,Calidris canutus
+41,Calidris maritima_Purple Sandpiper,Purple Sandpiper,Calidris maritima
+42,Calidris melanotos_Pectoral Sandpiper,Pectoral Sandpiper,Calidris melanotos
+43,Calidris pugnax_Ruff,Ruff,Calidris pugnax
+44,Calonectris diomedea_Cory's Shearwater,Scopoli's Shearwater,Calonectris diomedea
+45,Caprimulgus europaeus_Eurasian Nightjar,Nightjar,Caprimulgus europaeus
+46,Carduelis carduelis_European Goldfinch,Goldfinch,Carduelis carduelis
+47,Cepphus grylle_Black Guillemot,Black Guillemot,Cepphus grylle
+48,Certhia brachydactyla_Short-toed Treecreeper,Short-toed Treecreeper,Certhia brachydactyla
+49,Certhia familiaris_Eurasian Treecreeper,Treecreeper,Certhia familiaris
+50,Cettia cetti_Cetti's Warbler,Cetti's Warbler,Cettia cetti
+51,Charadrius hiaticula_Common Ringed Plover,Ringed Plover,Charadrius hiaticula
+52,Chlidonias hybrida_Whiskered Tern,Whiskered Tern,Chlidonias hybrida
+53,Chlidonias leucopterus_White-winged Tern,White-winged Black Tern,Chlidonias leucopterus
+54,Chroicocephalus ridibundus_Black-headed Gull,Black-headed Gull,Chroicocephalus ridibundus
+55,Ciconia ciconia_White Stork,White Stork,Ciconia ciconia
+56,Ciconia nigra_Black Stork,Black Stork,Ciconia nigra
+57,Cinclus cinclus_White-throated Dipper,Dipper,Cinclus cinclus
+58,Circaetus gallicus_Short-toed Snake-Eagle,Short-toed Eagle,Circaetus gallicus
+59,Circus aeruginosus_Eurasian Marsh-Harrier,Marsh Harrier,Circus aeruginosus
+60,Circus macrourus_Pallid Harrier,Pallid Harrier,Circus macrourus
+61,Circus pygargus_Montagu's Harrier,Montagu's Harrier,Circus pygargus
+62,Cisticola juncidis_Zitting Cisticola,Zitting Cisticola,Cisticola juncidis
+63,Clangula hyemalis_Long-tailed Duck,Long-tailed Duck,Clangula hyemalis
+64,Coccothraustes coccothraustes_Hawfinch,Hawfinch,Coccothraustes coccothraustes
+65,Columba livia_Rock Pigeon,Rock Dove,Columba livia
+66,Columba palumbus_Common Wood-Pigeon,Woodpigeon,Columba palumbus
+67,Corvus corax_Common Raven,Raven,Corvus corax
+68,Corvus corone_Carrion Crow,Carrion Crow,Corvus corone
+69,Coturnix coturnix_Common Quail,Quail,Coturnix coturnix
+70,Crex crex_Corn Crake,Corncrake,Crex crex
+71,Curruca communis_Greater Whitethroat,Whitethroat,Curruca communis
+72,Curruca curruca_Lesser Whitethroat,Lesser Whitethroat,Curruca curruca
+73,Curruca undata_Dartford Warbler,Dartford Warbler,Curruca undata
+74,Cyanistes caeruleus_Eurasian Blue Tit,Blue Tit,Cyanistes caeruleus
+75,Cygnus columbianus_Tundra Swan,Bewick's Swan,Cygnus columbianus
+76,Cygnus olor_Mute Swan,Mute Swan,Cygnus olor
+77,Dendrocopos major_Great Spotted Woodpecker,Great Spotted Woodpecker,Dendrocopos major
+78,Dryobates minor_Lesser Spotted Woodpecker,Lesser Spotted Woodpecker,Dryobates minor
+79,Egretta garzetta_Little Egret,Little Egret,Egretta garzetta
+80,Emberiza cia_Rock Bunting,Rock Bunting,Emberiza cia
+81,Emberiza cirlus_Cirl Bunting,Cirl Bunting,Emberiza cirlus
+82,Emberiza schoeniclus_Reed Bunting,Reed Bunting,Emberiza schoeniclus
+83,Erithacus rubecula_European Robin,Robin,Erithacus rubecula
+84,Falco columbarius_Merlin,Merlin,Falco columbarius
+85,Falco peregrinus_Peregrine Falcon,Peregrine,Falco peregrinus
+86,Falco subbuteo_Eurasian Hobby,Hobby,Falco subbuteo
+87,Falco vespertinus_Red-footed Falcon,Red-footed Falcon,Falco vespertinus
+88,Ficedula hypoleuca_European Pied Flycatcher,Pied Flycatcher,Ficedula hypoleuca
+89,Fratercula arctica_Atlantic Puffin,Puffin,Fratercula arctica
+90,Fringilla coelebs_Common Chaffinch,Chaffinch,Fringilla coelebs
+91,Fringilla montifringilla_Brambling,Brambling,Fringilla montifringilla
+92,Fulica atra_Eurasian Coot,Coot,Fulica atra
+93,Gallinago gallinago_Common Snipe,Snipe,Gallinago gallinago
+94,Garrulus glandarius_Eurasian Jay,Jay,Garrulus glandarius
+95,Gavia arctica_Arctic Loon,Black-throated Diver,Gavia arctica
+96,Grus grus_Common Crane,Common Crane,Grus grus
+97,Haliaeetus albicilla_White-tailed Eagle,White-tailed Eagle,Haliaeetus albicilla
+98,Himantopus himantopus_Black-winged Stilt,Black-winged Stilt,Himantopus himantopus
+99,Hippolais icterina_Icterine Warbler,Icterine Warbler,Hippolais icterina
+100,Hippolais polyglotta_Melodious Warbler,Melodious Warbler,Hippolais polyglotta
+101,Hirundo rustica_Barn Swallow,Swallow,Hirundo rustica
+102,Hydrobates leucorhous_Leach's Storm-Petrel,Leach's Storm-petrel,Hydrobates leucorhous
+103,Hydrobates pelagicus_European Storm-Petrel,European Storm-petrel,Hydrobates pelagicus
+104,Hydroprogne caspia_Caspian Tern,Caspian Tern,Hydroprogne caspia
+105,Ichthyaetus melanocephalus_Mediterranean Gull,Mediterranean Gull,Ichthyaetus melanocephalus
+106,Jynx torquilla_Eurasian Wryneck,Wryneck,Jynx torquilla
+108,Lanius collurio_Red-backed Shrike,Red-backed Shrike,Lanius collurio
+109,Larus argentatus_Herring Gull,Herring Gull,Larus argentatus
+110,Larus cachinnans_Caspian Gull,Caspian Gull,Larus cachinnans
+111,Larus delawarensis_Ring-billed Gull,Ring-billed Gull,Larus delawarensis
+112,Larus glaucoides_Iceland Gull,Iceland Gull,Larus glaucoides
+113,Larus hyperboreus_Glaucous Gull,Glaucous Gull,Larus hyperboreus
+114,Larus michahellis_Yellow-legged Gull,Yellow-legged Gull,Larus michahellis
+115,Limnodromus scolopaceus_Long-billed Dowitcher,Long-billed Dowitcher,Limnodromus scolopaceus
+116,Limosa lapponica_Bar-tailed Godwit,Bar-tailed Godwit,Limosa lapponica
+117,Linaria flavirostris_Twite,Twite,Linaria flavirostris
+118,Locustella luscinioides_Savi's Warbler,Savi's Warbler,Locustella luscinioides
+119,Loxia curvirostra_Red Crossbill,Crossbill,Loxia curvirostra
+120,Lullula arborea_Wood Lark,Woodlark,Lullula arborea
+121,Luscinia megarhynchos_Common Nightingale,Nightingale,Luscinia megarhynchos
+122,Luscinia svecica_Bluethroat,Bluethroat,Luscinia svecica
+123,Lymnocryptes minimus_Jack Snipe,Jack Snipe,Lymnocryptes minimus
+124,Lyrurus tetrix_Black Grouse,Black Grouse,Lyrurus tetrix
+125,Mareca penelope_Eurasian Wigeon,Wigeon,Mareca penelope
+126,Mareca strepera_Gadwall,Gadwall,Mareca strepera
+127,Melanitta fusca_Velvet Scoter,Velvet Scoter,Melanitta fusca
+128,Melanitta nigra_Common Scoter,Common Scoter,Melanitta nigra
+129,Mergellus albellus_Smew,Smew,Mergellus albellus
+130,Milvus migrans_Black Kite,Black Kite,Milvus migrans
+131,Milvus milvus_Red Kite,Red Kite,Milvus milvus
+132,Monticola saxatilis_Rufous-tailed Rock-Thrush,Rock Thrush,Monticola saxatilis
+133,Motacilla alba_White Wagtail,Pied Wagtail,Motacilla alba
+134,Motacilla cinerea_Gray Wagtail,Grey Wagtail,Motacilla cinerea
+135,Netta rufina_Red-crested Pochard,Red-crested Pochard,Netta rufina
+136,Numenius phaeopus_Whimbrel,Whimbrel,Numenius phaeopus
+137,Nycticorax nycticorax_Black-crowned Night-Heron,Night-heron,Nycticorax nycticorax
+138,Oenanthe oenanthe_Northern Wheatear,Wheatear,Oenanthe oenanthe
+139,Oriolus oriolus_Eurasian Golden Oriole,Golden Oriole,Oriolus oriolus
+140,Otus scops_Eurasian Scops-Owl,Scops Owl,Otus scops
+141,Oxyura jamaicensis_Ruddy Duck,Ruddy Duck,Oxyura jamaicensis
+142,Pandion haliaetus_Osprey,Osprey,Pandion haliaetus
+143,Panurus biarmicus_Bearded Reedling,Bearded Tit,Panurus biarmicus
+144,Parus major_Great Tit,Great Tit,Parus major
+145,Passer domesticus_House Sparrow,House Sparrow,Passer domesticus
+146,Perdix perdix_Gray Partridge,Grey Partridge,Perdix perdix
+147,Periparus ater_Coal Tit,Coal Tit,Periparus ater
+148,Pernis apivorus_European Honey-buzzard,Honey-buzzard,Pernis apivorus
+149,Phalacrocorax carbo_Great Cormorant,Cormorant,Phalacrocorax carbo
+150,Phalaropus fulicarius_Red Phalarope,Grey Phalarope,Phalaropus fulicarius
+151,Phasianus colchicus_Ring-necked Pheasant,Pheasant,Phasianus colchicus
+152,Phoenicurus phoenicurus_Common Redstart,Redstart,Phoenicurus phoenicurus
+153,Phylloscopus collybita_Common Chiffchaff,Chiffchaff,Phylloscopus collybita
+154,Phylloscopus inornatus_Yellow-browed Warbler,Yellow-browed Warbler,Phylloscopus inornatus
+155,Phylloscopus sibilatrix_Wood Warbler,Wood Warbler,Phylloscopus sibilatrix
+156,Phylloscopus trochilus_Willow Warbler,Willow Warbler,Phylloscopus trochilus
+157,Pica pica_Eurasian Magpie,Magpie,Pica pica
+158,Picus viridis_Eurasian Green Woodpecker,Green Woodpecker,Picus viridis
+159,Platalea leucorodia_Eurasian Spoonbill,Spoonbill,Platalea leucorodia
+160,Plectrophenax nivalis_Snow Bunting,Snow Bunting,Plectrophenax nivalis
+161,Plegadis falcinellus_Glossy Ibis,Glossy Ibis,Plegadis falcinellus
+162,Pluvialis apricaria_European Golden-Plover,Golden Plover,Pluvialis apricaria
+163,Pluvialis squatarola_Black-bellied Plover,Grey Plover,Pluvialis squatarola
+164,Podiceps auritus_Horned Grebe,Slavonian Grebe,Podiceps auritus
+165,Podiceps cristatus_Great Crested Grebe,Great Crested Grebe,Podiceps cristatus
+166,Podiceps grisegena_Red-necked Grebe,Red-necked Grebe,Podiceps grisegena
+167,Podiceps nigricollis_Eared Grebe,Black-necked Grebe,Podiceps nigricollis
+168,Poecile montanus_Willow Tit,Willow Tit,Poecile montanus
+169,Poecile palustris_Marsh Tit,Marsh Tit,Poecile palustris
+170,Porzana porzana_Spotted Crake,Spotted Crake,Porzana porzana
+171,Prunella modularis_Dunnock,Dunnock,Prunella modularis
+172,Psittacula krameri_Rose-ringed Parakeet,Ring-necked Parakeet,Psittacula krameri
+173,Ptyonoprogne rupestris_Eurasian Crag-Martin,Crag Martin,Ptyonoprogne rupestris
+174,Pyrrhula pyrrhula_Eurasian Bullfinch,Bullfinch,Pyrrhula pyrrhula
+175,Rallus aquaticus_Water Rail,Water Rail,Rallus aquaticus
+176,Regulus ignicapilla_Common Firecrest,Firecrest,Regulus ignicapilla
+177,Regulus regulus_Goldcrest,Goldcrest,Regulus regulus
+178,Remiz pendulinus_Eurasian Penduline-Tit,Penduline Tit,Remiz pendulinus
+179,Riparia riparia_Bank Swallow,Sand Martin,Riparia riparia
+180,Saxicola rubetra_Whinchat,Whinchat,Saxicola rubetra
+181,Saxicola rubicola_European Stonechat,Stonechat,Saxicola rubicola
+182,Serinus serinus_European Serin,Serin,Serinus serinus
+183,Sitta europaea_Eurasian Nuthatch,Nuthatch,Sitta europaea
+184,Somateria mollissima_Common Eider,Eider,Somateria mollissima
+185,Spatula querquedula_Garganey,Garganey,Spatula querquedula
+186,Spinus spinus_Eurasian Siskin,Siskin,Spinus spinus
+187,Stercorarius skua_Great Skua,Great Skua,Stercorarius skua
+188,Sterna dougallii_Roseate Tern,Roseate Tern,Sterna dougallii
+189,Streptopelia decaocto_Eurasian Collared-Dove,Collared Dove,Streptopelia decaocto
+190,Strix aluco_Tawny Owl,Tawny Owl,Strix aluco
+191,Sylvia atricapilla_Eurasian Blackcap,Blackcap,Sylvia atricapilla
+192,Sylvia borin_Garden Warbler,Garden Warbler,Sylvia borin
+193,Tichodroma muraria_Wallcreeper,Wallcreeper,Tichodroma muraria
+194,Tringa glareola_Wood Sandpiper,Wood Sandpiper,Tringa glareola
+195,Tringa nebularia_Common Greenshank,Greenshank,Tringa nebularia
+196,Tringa ochropus_Green Sandpiper,Green Sandpiper,Tringa ochropus
+197,Tringa stagnatilis_Marsh Sandpiper,Marsh Sandpiper,Tringa stagnatilis
+198,Troglodytes troglodytes_Eurasian Wren,Wren,Troglodytes troglodytes
+199,Turdus merula_Eurasian Blackbird,Blackbird,Turdus merula
+200,Turdus philomelos_Song Thrush,Song Thrush,Turdus philomelos
+201,Turdus pilaris_Fieldfare,Fieldfare,Turdus pilaris
+202,Turdus torquatus_Ring Ouzel,Ring Ouzel,Turdus torquatus
+203,Turdus viscivorus_Mistle Thrush,Mistle Thrush,Turdus viscivorus
+204,Tyto alba_Barn Owl,Barn Owl,Tyto alba
+205,Upupa epops_Eurasian Hoopoe,Hoopoe,Upupa epops
+206,Vanellus vanellus_Northern Lapwing,Lapwing,Vanellus vanellus
+207,Xema sabini_Sabine's Gull,Sabine's Gull,Xema sabini

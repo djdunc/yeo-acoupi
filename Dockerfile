@@ -25,8 +25,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Ensure .streamlit folder and secrets.toml exist so environment variables can load
 RUN mkdir -p .streamlit && touch .streamlit/secrets.toml
 
-# Copy the application source code
+# Copy the application source code and reference data
 COPY yeo-vis.py .
+COPY data/ ./data/
 
 # Copy the local configuration folder if it exists in the build context
 COPY .streamli[t]/ .streamlit/
