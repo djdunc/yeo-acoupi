@@ -52,7 +52,7 @@ query_api = client.query_api()
 def load_species_database():
     """
     Loads bird and bat reference species lists from CSV files.
-    Builds comprehensive lookup dictionaries by numeric species_id, class_name, and scientific name.
+    Builds comprehensive lookup dictionaries by numeric species_id, class_name, scientific name, and common name.
     """
     base_dir = os.path.dirname(os.path.abspath(__file__))
     
@@ -110,6 +110,12 @@ def load_species_database():
     id_map = {}
     class_map = {}
     species_map = {}
+    common_map = {}
+    
+    def normalize_str(s):
+        if not s:
+            return ""
+        return str(s).strip().lower().replace("’", "'").replace("-", " ")
     
     for _, row in combined.iterrows():
         sid = str(row.get("species_id", "")).strip()
@@ -119,8 +125,8 @@ def load_species_database():
         cat = str(row.get("category", "Unknown")).strip()
         
         meta = {
-            "common_name": cname,
-            "species": sname,
+            "common_name": cname if cname else sname if sname else cls,
+            "species": sname if sname else cname,
             "class_name": cls,
             "category": cat
         }
@@ -134,12 +140,25 @@ def load_species_database():
                 
         if cls:
             class_map[cls.lower()] = meta
+            class_map[normalize_str(cls)] = meta
+            if "_" in cls:
+                parts = cls.split("_", 1)
+                species_map[parts[0].lower()] = meta
+                species_map[normalize_str(parts[0])] = meta
+                common_map[parts[1].lower()] = meta
+                common_map[normalize_str(parts[1])] = meta
+                
         if sname:
             species_map[sname.lower()] = meta
+            species_map[normalize_str(sname)] = meta
             
-    return combined, id_map, class_map, species_map
+        if cname:
+            common_map[cname.lower()] = meta
+            common_map[normalize_str(cname)] = meta
+            
+    return combined, id_map, class_map, species_map, common_map
 
-_, id_map, class_map, species_map = load_species_database()
+_, id_map, class_map, species_map, common_map = load_species_database()
 
 def resolve_species(val):
     """
@@ -152,7 +171,7 @@ def resolve_species(val):
     if not val_str or val_str.lower() in ("nan", "none", "null", "<na>"):
         return {"common_name": "Unknown", "species": "Unknown", "category": "Unknown"}
         
-    # Check numeric ID match (e.g. '83' -> Robin, '220' -> Soprano pipistrelle)
+    # 1. Check numeric ID match (e.g. '83' -> Robin, '220' -> Soprano pipistrelle)
     if val_str in id_map:
         return id_map[val_str]
     try:
@@ -163,21 +182,40 @@ def resolve_species(val):
         pass
         
     val_lower = val_str.lower()
-    # Check class name match (e.g. 'barbar' -> Barbastelle)
+    norm_val = val_lower.replace("’", "'").replace("-", " ")
+    
+    # 2. Check class name match (e.g. 'barbar' -> Barbastelle)
     if val_lower in class_map:
         return class_map[val_lower]
+    if norm_val in class_map:
+        return class_map[norm_val]
         
-    # Check scientific species name match (e.g. 'pipistrellus pipistrellus' -> Common pipistrelle)
+    # 3. Check common name match (e.g. 'Robin' -> European Robin, 'Common pipistrelle')
+    if val_lower in common_map:
+        return common_map[val_lower]
+    if norm_val in common_map:
+        return common_map[norm_val]
+        
+    # 4. Check scientific species name match (e.g. 'pipistrellus pipistrellus' -> Common pipistrelle)
     if val_lower in species_map:
         return species_map[val_lower]
+    if norm_val in species_map:
+        return species_map[norm_val]
         
-    # Check underscore separated class format (e.g. 'Accipiter nisus_Eurasian Sparrowhawk')
+    # 5. Check underscore separated class format (e.g. 'Accipiter nisus_Eurasian Sparrowhawk')
     if "_" in val_str:
         parts = val_str.split("_", 1)
         if len(parts) == 2 and parts[1].strip():
+            cname = parts[1].strip()
+            sname = parts[0].strip()
+            # Check if either part matches our database
+            if cname.lower() in common_map:
+                return common_map[cname.lower()]
+            if sname.lower() in species_map:
+                return species_map[sname.lower()]
             return {
-                "common_name": parts[1].strip(),
-                "species": parts[0].strip(),
+                "common_name": cname,
+                "species": sname,
                 "category": "Bird"
             }
             
@@ -189,7 +227,7 @@ def resolve_species(val):
     }
 
 # --- DISCOVER KNOWN DEVICES & DEPLOYMENTS ---
-@st.cache_data(ttl=180)
+@st.cache_data(ttl=120)
 def fetch_device_deployments():
     """
     Fetches the mapping of device_id to latest deployment details (name, lat, lon).
@@ -199,6 +237,7 @@ def fetch_device_deployments():
     from(bucket: "{BUCKET}")
       |> range(start: -30d)
       |> filter(fn: (r) => r["_measurement"] == "acoupi_deployment")
+      |> last()
       |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
     '''
     mapping = {}
@@ -214,36 +253,56 @@ def fetch_device_deployments():
                 if dev_id not in mapping:
                     mapping[dev_id] = {
                         "name": str(row.get("name", dev_id)).strip(),
-                        "latitude": row.get("latitude", None) if pd.notna(row.get("latitude")) else None,
-                        "longitude": row.get("longitude", None) if pd.notna(row.get("longitude")) else None,
-                        "version": row.get("version", None) if pd.notna(row.get("version")) else None
+                        "latitude": float(row["latitude"]) if pd.notna(row.get("latitude")) else None,
+                        "longitude": float(row["longitude"]) if pd.notna(row.get("longitude")) else None,
+                        "version": str(row.get("version", "")).strip() if pd.notna(row.get("version")) else None
                     }
     except Exception:
         pass
     return mapping
 
-@st.cache_data(ttl=180)
+@st.cache_data(ttl=120)
 def fetch_known_devices():
     """Fetches unique device identifiers with active data from InfluxDB."""
-    q = f'''
+    q_dev = f'''
     from(bucket: "{BUCKET}")
       |> range(start: -30d)
-      |> filter(fn: (r) => r["_measurement"] == "acoupi_detections" or r["_measurement"] == "acoupi_heartbeat" or r["_measurement"] == "acoupi_deployment")
-      |> keep(columns: ["device_id", "topic"])
+      |> filter(fn: (r) => r["_measurement"] == "acoupi_detections" or r["_measurement"] == "acoupi_data" or r["_measurement"] == "acoupi_heartbeat" or r["_measurement"] == "acoupi_deployment")
+      |> keep(columns: ["device_id"])
+      |> group()
+      |> distinct(column: "device_id")
+    '''
+    q_top = f'''
+    from(bucket: "{BUCKET}")
+      |> range(start: -30d)
+      |> filter(fn: (r) => r["_measurement"] == "acoupi_detections" or r["_measurement"] == "acoupi_data" or r["_measurement"] == "acoupi_heartbeat" or r["_measurement"] == "acoupi_deployment")
+      |> keep(columns: ["topic"])
+      |> group()
+      |> distinct(column: "topic")
     '''
     devs = set()
     try:
-        res = query_api.query_data_frame(q)
-        if isinstance(res, list):
-            res = pd.concat(res, ignore_index=True) if len(res) > 0 else pd.DataFrame()
-        if not res.empty:
-            if "device_id" in res.columns:
-                for d in res["device_id"].dropna().unique():
+        res_dev = query_api.query_data_frame(q_dev)
+        if isinstance(res_dev, list):
+            res_dev = pd.concat(res_dev, ignore_index=True) if len(res_dev) > 0 else pd.DataFrame()
+        if not res_dev.empty:
+            col = "device_id" if "device_id" in res_dev.columns else ("_value" if "_value" in res_dev.columns else None)
+            if col:
+                for d in res_dev[col].dropna().unique():
                     d_str = str(d).strip()
                     if d_str:
                         devs.add(d_str)
-            if "topic" in res.columns:
-                for t in res["topic"].dropna().unique():
+    except Exception:
+        pass
+
+    try:
+        res_top = query_api.query_data_frame(q_top)
+        if isinstance(res_top, list):
+            res_top = pd.concat(res_top, ignore_index=True) if len(res_top) > 0 else pd.DataFrame()
+        if not res_top.empty:
+            col = "topic" if "topic" in res_top.columns else ("_value" if "_value" in res_top.columns else None)
+            if col:
+                for t in res_top[col].dropna().unique():
                     t_str = str(t).strip()
                     parts = t_str.split("/")
                     if len(parts) >= 3 and parts[0] == "yeo" and parts[1] == "acoupi":
@@ -264,6 +323,12 @@ def fetch_known_devices():
 known_devices = fetch_known_devices()
 deployments = fetch_device_deployments()
 
+# Merge devices from deployment map
+for d in deployments.keys():
+    if d not in known_devices and d.lower() not in ("nan", "none", "null", "unknown", ""):
+        known_devices.append(d)
+known_devices = sorted(list(set(known_devices)))
+
 # --- SIDEBAR CONTROLS ---
 st.sidebar.markdown("## ⚙️ Dashboard Controls")
 
@@ -281,15 +346,17 @@ for dev_id in known_devices:
 
 device_options = ["All Devices"] + [device_display_options[d] for d in known_devices]
 
-if "device_select_key" not in st.session_state:
-    st.session_state["device_select_key"] = "All Devices"
+# Retain previously selected display or default
+current_device_selection = st.session_state.get("device_select_key", "All Devices")
+device_idx = device_options.index(current_device_selection) if current_device_selection in device_options else 0
 
 selected_display = st.sidebar.selectbox(
     "Device Selection",
     options=device_options,
+    index=device_idx,
     key="device_select_key"
 )
-selected_device = display_to_id[selected_display]
+selected_device = display_to_id.get(selected_display, selected_display)
 
 # 2. Time Window Selector
 time_options = {
@@ -301,37 +368,37 @@ time_options = {
 }
 time_labels = list(time_options.keys())
 
-if "time_window_key" not in st.session_state:
-    st.session_state["time_window_key"] = "Last 7 Days"
+current_time_selection = st.session_state.get("time_window_key", "Last 7 Days")
+time_idx = time_labels.index(current_time_selection) if current_time_selection in time_labels else 2
 
 selected_time_label = st.sidebar.selectbox(
     "Time Window",
     options=time_labels,
+    index=time_idx,
     key="time_window_key"
 )
 selected_time_val = time_options[selected_time_label]
 
-# 3. Confidence Threshold (Default 0.50, state-persisted)
-if "conf_threshold_key" not in st.session_state:
-    st.session_state["conf_threshold_key"] = 0.50
-
+# 3. Confidence Threshold
 confidence_threshold = st.sidebar.slider(
     "Confidence Threshold",
     min_value=0.0,
     max_value=1.0,
-    value=st.session_state["conf_threshold_key"],
+    value=float(st.session_state.get("conf_threshold_key", 0.50)),
     step=0.05,
     key="conf_threshold_key",
     help="Filter detections below this model confidence score"
 )
 
 # 4. Taxa / Category Filter
-if "category_filter_key" not in st.session_state:
-    st.session_state["category_filter_key"] = "All Species (Birds & Bats)"
+category_options = ["All Species (Birds & Bats)", "Birds Only 🐦", "Bats Only 🦇", "All Detections (incl. Other)"]
+current_cat_selection = st.session_state.get("category_filter_key", "All Species (Birds & Bats)")
+cat_idx = category_options.index(current_cat_selection) if current_cat_selection in category_options else 0
 
 category_filter = st.sidebar.selectbox(
     "Taxa / Category Filter",
-    options=["All Species (Birds & Bats)", "Birds Only 🐦", "Bats Only 🦇", "All Detections (incl. Other)"],
+    options=category_options,
+    index=cat_idx,
     key="category_filter_key"
 )
 
@@ -351,7 +418,7 @@ def fetch_heartbeat_data():
         if isinstance(hb_df, list):
             hb_df = pd.concat(hb_df, ignore_index=True) if len(hb_df) > 0 else pd.DataFrame()
         return hb_df
-    except Exception as e:
+    except Exception:
         return pd.DataFrame()
 
 hb_df = fetch_heartbeat_data()
@@ -361,7 +428,7 @@ active_devices_count = 0
 
 def resolve_device_id(row):
     dev = row.get("device_id")
-    if pd.notna(dev) and str(dev).strip():
+    if pd.notna(dev) and str(dev).strip() and str(dev).strip().lower() not in ("nan", "none", "null", "unknown"):
         return str(dev).strip()
     topic = row.get("topic")
     if pd.notna(topic) and isinstance(topic, str):
@@ -431,7 +498,7 @@ def fetch_detection_data(time_val):
     flux_query = f'''
     from(bucket: "{BUCKET}")
       |> range(start: {time_val})
-      |> filter(fn: (r) => r["_measurement"] == "acoupi_detections")
+      |> filter(fn: (r) => r["_measurement"] == "acoupi_detections" or r["_measurement"] == "acoupi_data")
       |> filter(fn: (r) => r["_field"] == "c" or r["_field"] == "confidence" or r["_field"] == "confidence_score" or r["_field"] == "detection_score" or r["_field"] == "value" or r["_field"] == "s" or r["_field"] == "label" or r["_field"] == "species")
       |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
     '''
@@ -440,7 +507,7 @@ def fetch_detection_data(time_val):
         if isinstance(df, list):
             df = pd.concat(df, ignore_index=True) if len(df) > 0 else pd.DataFrame()
         return df
-    except Exception as e:
+    except Exception:
         return pd.DataFrame()
 
 raw_df = fetch_detection_data(selected_time_val)
@@ -449,62 +516,75 @@ raw_df = fetch_detection_data(selected_time_val)
 st.title("🌿 Yeo Valley Bioacoustic Monitoring")
 st.markdown("Real-time bioacoustic detection & telemetry dashboard powered by **Acoupi Uno Q** & **InfluxDB**.")
 
-if raw_df.empty:
-    st.warning(f"No acoustic detection data found for the selected time range ({selected_time_label}).")
-    st.stop()
-
 # --- DATA PROCESSING & RESOLUTION ---
-df = raw_df.copy()
+df = pd.DataFrame()
+has_raw_data = False
 
-# 1. Format Time
-if "_time" in df.columns:
-    df["Time"] = pd.to_datetime(df["_time"])
-elif "Time" in df.columns:
-    df["Time"] = pd.to_datetime(df["Time"])
-else:
-    st.error("No timestamp column found in detection data.")
-    st.stop()
+if not raw_df.empty:
+    df = raw_df.copy()
+    
+    # 1. Format Time
+    if "_time" in df.columns:
+        df["Time"] = pd.to_datetime(df["_time"])
+    elif "Time" in df.columns:
+        df["Time"] = pd.to_datetime(df["Time"])
+    else:
+        df["Time"] = pd.NaT
 
-# 2. Extract Device
-df["Device"] = df.apply(resolve_device_id, axis=1)
-df["Device_Friendly"] = df["Device"].apply(lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d)
+    df = df.dropna(subset=["Time"])
 
-# 3. Extract Confidence Score
-confidence_series = pd.Series(index=df.index, dtype="float64")
-for col in ["c", "confidence", "confidence_score", "detection_score"]:
-    if col in df.columns:
-        confidence_series = confidence_series.fillna(pd.to_numeric(df[col], errors="coerce"))
-df["Confidence"] = confidence_series
+    # 2. Extract Device
+    df["Device"] = df.apply(resolve_device_id, axis=1)
+    df["Device_Friendly"] = df["Device"].apply(
+        lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d
+    )
 
-# 4. Extract and Resolve Species Identity
-species_raw = pd.Series(index=df.index, dtype="object")
-for col in ["s", "label", "species", "value"]:
-    if col in df.columns:
-        valid_vals = df[col].astype(str).replace({"nan": None, "None": None, "": None, "<NA>": None})
-        species_raw = species_raw.fillna(valid_vals)
+    # 3. Extract Confidence Score
+    confidence_series = pd.Series(index=df.index, dtype="float64")
+    for col in ["c", "confidence", "confidence_score", "detection_score"]:
+        if col in df.columns:
+            confidence_series = confidence_series.fillna(pd.to_numeric(df[col], errors="coerce"))
+    df["Confidence"] = confidence_series
 
-resolved_meta = [resolve_species(v) for v in species_raw]
-df["Common_Name"] = [m["common_name"] for m in resolved_meta]
-df["Scientific_Name"] = [m["species"] for m in resolved_meta]
-df["Category"] = [m["category"] for m in resolved_meta]
+    # 4. Extract and Resolve Species Identity
+    species_raw = pd.Series(index=df.index, dtype="object")
+    for col in ["s", "label", "species", "value"]:
+        if col in df.columns:
+            valid_vals = df[col].astype(str).replace({"nan": None, "None": None, "": None, "<NA>": None})
+            species_raw = species_raw.fillna(valid_vals)
 
-# Drop records missing confidence or common name
-df = df.dropna(subset=["Confidence", "Common_Name"])
+    resolved_meta = [resolve_species(v) for v in species_raw]
+    df["Common_Name"] = [m["common_name"] for m in resolved_meta]
+    df["Scientific_Name"] = [m["species"] for m in resolved_meta]
+    df["Category"] = [m["category"] for m in resolved_meta]
+
+    # Drop records missing confidence or common name
+    df = df.dropna(subset=["Confidence", "Common_Name"])
+    if not df.empty:
+        has_raw_data = True
 
 # 5. Apply Device Filter
-if selected_device != "All Devices":
-    df = df[df["Device"] == selected_device]
+if has_raw_data and selected_device != "All Devices":
+    match_mask = (df["Device"] == selected_device)
+    if "device_id" in df.columns:
+        match_mask = match_mask | (df["device_id"].astype(str) == selected_device)
+    if "topic" in df.columns:
+        match_mask = match_mask | (df["topic"].astype(str).str.contains(selected_device, na=False))
+    if "Device_Friendly" in df.columns:
+        match_mask = match_mask | (df["Device_Friendly"] == selected_display)
+    df = df[match_mask]
 
 # 6. Apply Taxa Filter
-if category_filter == "Birds Only 🐦":
-    df = df[df["Category"] == "Bird"]
-elif category_filter == "Bats Only 🦇":
-    df = df[df["Category"] == "Bat"]
-elif category_filter == "All Species (Birds & Bats)":
-    df = df[df["Category"].isin(["Bird", "Bat"])]
+if has_raw_data:
+    if category_filter == "Birds Only 🐦":
+        df = df[df["Category"] == "Bird"]
+    elif category_filter == "Bats Only 🦇":
+        df = df[df["Category"] == "Bat"]
+    elif category_filter == "All Species (Birds & Bats)":
+        df = df[df["Category"].isin(["Bird", "Bat"])]
 
 # 7. Apply Confidence Threshold Filter
-high_conf_df = df[df["Confidence"] >= confidence_threshold]
+high_conf_df = df[df["Confidence"] >= confidence_threshold] if not df.empty else pd.DataFrame()
 
 # --- KPI METRICS ROW ---
 col_m1, col_m2, col_m3, col_m4, col_m5 = st.columns(5)
@@ -513,7 +593,7 @@ total_detections = len(high_conf_df)
 unique_species = high_conf_df["Common_Name"].nunique() if not high_conf_df.empty else 0
 top_species = high_conf_df["Common_Name"].mode().iloc[0] if not high_conf_df.empty else "None"
 avg_confidence = f"{high_conf_df['Confidence'].mean():.1%}" if not high_conf_df.empty else "N/A"
-reporting_nodes = df["Device"].nunique()
+reporting_nodes = df["Device"].nunique() if not df.empty else 0
 
 col_m1.metric("High-Conf Detections", f"{total_detections:,}")
 col_m2.metric("Species Identified", f"{unique_species}")
@@ -523,184 +603,191 @@ col_m5.metric("Active Nodes", f"{reporting_nodes}")
 
 st.divider()
 
-if high_conf_df.empty:
-    st.info(f"Detections exist for this selection, but none meet the confidence threshold of {confidence_threshold:.2f}.")
-    st.stop()
+if not has_raw_data:
+    st.warning(f"No acoustic detection data found for the selected time range ({selected_time_label}).")
+elif high_conf_df.empty:
+    st.info(
+        f"ℹ️ No detections match the current selection: **{selected_display}** | **{category_filter}** | Confidence ≥ **{confidence_threshold:.2f}**. "
+        "Try lowering the confidence threshold or selecting 'All Devices' / 'All Species'."
+    )
+else:
+    # --- TIMELINE VISUALIZATION (FULL WIDTH) ---
+    st.subheader(f"📈 Species Activity Timeline (Confidence ≥ {confidence_threshold:.2f})")
 
-# --- TIMELINE VISUALIZATION (FULL WIDTH) ---
-st.subheader(f"📈 Species Activity Timeline (Confidence ≥ {confidence_threshold:.2f})")
+    # Limit to top 15 species for timeline visual clarity
+    top_timeline_species = high_conf_df["Common_Name"].value_counts().nlargest(15).index.tolist()
+    plot_df = high_conf_df[high_conf_df["Common_Name"].isin(top_timeline_species)].copy()
 
-# Limit to top 15 species for timeline visual clarity
-top_timeline_species = high_conf_df["Common_Name"].value_counts().nlargest(15).index.tolist()
-plot_df = high_conf_df[high_conf_df["Common_Name"].isin(top_timeline_species)].copy()
+    species_order = plot_df["Common_Name"].value_counts().index.tolist()
 
-species_order = plot_df["Common_Name"].value_counts().index.tolist()
+    fig_timeline = px.scatter(
+        plot_df,
+        x="Time",
+        y="Common_Name",
+        color="Category",
+        size="Confidence",
+        size_max=9,
+        opacity=0.8,
+        category_orders={"Common_Name": species_order},
+        color_discrete_map={"Bird": "#2b8a3e", "Bat": "#5f3dc4", "Other": "#868e96"},
+        hover_data={
+            "Time": "|%Y-%m-%d %H:%M:%S",
+            "Common_Name": True,
+            "Scientific_Name": True,
+            "Confidence": ":.2f",
+            "Device_Friendly": True,
+            "Category": True
+        },
+        labels={"Device_Friendly": "Device"},
+        template="plotly_white",
+        height=420
+    )
 
-fig_timeline = px.scatter(
-    plot_df,
-    x="Time",
-    y="Common_Name",
-    color="Category",
-    size="Confidence",
-    size_max=9,
-    opacity=0.8,
-    category_orders={"Common_Name": species_order},
-    color_discrete_map={"Bird": "#2b8a3e", "Bat": "#5f3dc4", "Other": "#868e96"},
-    hover_data={
-        "Time": "|%Y-%m-%d %H:%M:%S",
-        "Common_Name": True,
-        "Scientific_Name": True,
-        "Confidence": ":.2f",
-        "Device_Friendly": True,
-        "Category": True
-    },
-    labels={"Device_Friendly": "Device"},
-    template="plotly_white",
-    height=420
-)
+    # Solar Calculations for selected device or Yeo Valley
+    loc_lat, loc_lon = 51.32, -2.71
+    loc_name = "Yeo Valley"
+    if selected_device != "All Devices" and selected_device in deployments:
+        dev_info = deployments[selected_device]
+        if dev_info["latitude"] is not None and dev_info["longitude"] is not None:
+            loc_lat = dev_info["latitude"]
+            loc_lon = dev_info["longitude"]
+            loc_name = dev_info["name"]
 
-# Solar Calculations for selected device or Yeo Valley
-loc_lat, loc_lon = 51.32, -2.71
-loc_name = "Yeo Valley"
-if selected_device != "All Devices" and selected_device in deployments:
-    dev_info = deployments[selected_device]
-    if dev_info["latitude"] is not None and dev_info["longitude"] is not None:
-        loc_lat = dev_info["latitude"]
-        loc_lon = dev_info["longitude"]
-        loc_name = dev_info["name"]
+    loc = LocationInfo(loc_name, "UK", "Europe/London", loc_lat, loc_lon)
+    min_date = plot_df["Time"].min().date() - timedelta(days=1)
+    max_date = plot_df["Time"].max().date() + timedelta(days=1)
 
-loc = LocationInfo(loc_name, "UK", "Europe/London", loc_lat, loc_lon)
-min_date = plot_df["Time"].min().date() - timedelta(days=1)
-max_date = plot_df["Time"].max().date() + timedelta(days=1)
+    curr_date = min_date
+    while curr_date <= max_date:
+        try:
+            s_curr = sun(loc.observer, date=curr_date)
+            s_next = sun(loc.observer, date=curr_date + timedelta(days=1))
+            fig_timeline.add_vrect(
+                x0=s_curr["sunset"],
+                x1=s_next["sunrise"],
+                fillcolor="rgba(30, 41, 59, 0.08)",
+                opacity=1,
+                layer="below",
+                line_width=0,
+                annotation_text="Night" if curr_date == min_date + timedelta(days=1) else None,
+                annotation_position="top left"
+            )
+        except Exception:
+            pass
+        curr_date += timedelta(days=1)
 
-curr_date = min_date
-while curr_date <= max_date:
-    try:
-        s_curr = sun(loc.observer, date=curr_date)
-        s_next = sun(loc.observer, date=curr_date + timedelta(days=1))
-        fig_timeline.add_vrect(
-            x0=s_curr["sunset"],
-            x1=s_next["sunrise"],
-            fillcolor="rgba(30, 41, 59, 0.08)",
-            opacity=1,
-            layer="below",
-            line_width=0,
-            annotation_text="Night" if curr_date == min_date + timedelta(days=1) else None,
-            annotation_position="top left"
-        )
-    except Exception:
-        pass
-    curr_date += timedelta(days=1)
+    x_min = plot_df["Time"].min() - pd.Timedelta(hours=1)
+    x_max = plot_df["Time"].max() + pd.Timedelta(hours=1)
+    fig_timeline.update_xaxes(range=[x_min, x_max], title="Timestamp (UTC)")
+    fig_timeline.update_yaxes(title="Common Name")
+    fig_timeline.update_layout(
+        margin=dict(l=0, r=0, t=20, b=10),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
 
-x_min = plot_df["Time"].min() - pd.Timedelta(hours=1)
-x_max = plot_df["Time"].max() + pd.Timedelta(hours=1)
-fig_timeline.update_xaxes(range=[x_min, x_max], title="Timestamp (UTC)")
-fig_timeline.update_yaxes(title="Common Name")
-fig_timeline.update_layout(
-    margin=dict(l=0, r=0, t=20, b=10),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-)
+    st.plotly_chart(fig_timeline, use_container_width=True)
 
-st.plotly_chart(fig_timeline, use_container_width=True)
+    st.divider()
 
-st.divider()
+    # --- SPECIES LEADERBOARD (FULL PANEL WIDTH) ---
+    st.subheader("Species Leaderboard")
+    leaderboard = high_conf_df.groupby(["Common_Name", "Scientific_Name", "Category"]).agg(
+        Count=("Common_Name", "count"),
+        Max_Confidence=("Confidence", "max"),
+        Avg_Confidence=("Confidence", "mean")
+    ).sort_values(by="Count", ascending=False).reset_index()
 
-# --- SPECIES LEADERBOARD (FULL PANEL WIDTH) ---
-st.subheader("Species Leaderboard")
-leaderboard = high_conf_df.groupby(["Common_Name", "Scientific_Name", "Category"]).agg(
-    Count=("Common_Name", "count"),
-    Max_Confidence=("Confidence", "max"),
-    Avg_Confidence=("Confidence", "mean")
-).sort_values(by="Count", ascending=False).reset_index()
+    leaderboard["Max_Confidence"] = leaderboard["Max_Confidence"].apply(lambda x: f"{x:.2f}")
+    leaderboard["Avg_Confidence"] = leaderboard["Avg_Confidence"].apply(lambda x: f"{x:.2f}")
 
-leaderboard["Max_Confidence"] = leaderboard["Max_Confidence"].apply(lambda x: f"{x:.2f}")
-leaderboard["Avg_Confidence"] = leaderboard["Avg_Confidence"].apply(lambda x: f"{x:.2f}")
+    st.dataframe(
+        leaderboard,
+        column_config={
+            "Common_Name": st.column_config.TextColumn("Common Name", width="medium"),
+            "Category": st.column_config.TextColumn("Category", width="small"),
+            "Scientific_Name": st.column_config.TextColumn("Scientific Name", width="medium"),
+            "Count": st.column_config.ProgressColumn(
+                "Detections",
+                format="%d",
+                min_value=0,
+                max_value=int(leaderboard["Count"].max()) if not leaderboard.empty else 100
+            ),
+            "Max_Confidence": st.column_config.TextColumn("Max Conf", width="small"),
+            "Avg_Confidence": st.column_config.TextColumn("Avg Conf", width="small"),
+        },
+        hide_index=True,
+        use_container_width=True,
+        height=400
+    )
 
-st.dataframe(
-    leaderboard,
-    column_config={
-        "Common_Name": st.column_config.TextColumn("Common Name", width="medium"),
-        "Category": st.column_config.TextColumn("Category", width="small"),
-        "Scientific_Name": st.column_config.TextColumn("Scientific Name", width="medium"),
-        "Count": st.column_config.ProgressColumn(
-            "Detections",
-            format="%d",
-            min_value=0,
-            max_value=int(leaderboard["Count"].max()) if not leaderboard.empty else 100
-        ),
-        "Max_Confidence": st.column_config.TextColumn("Max Conf", width="small"),
-        "Avg_Confidence": st.column_config.TextColumn("Avg Conf", width="small"),
-    },
-    hide_index=True,
-    use_container_width=True,
-    height=400
-)
+    st.divider()
 
-st.divider()
+    # --- DIURNAL & NOCTURNAL ACTIVITY PROFILE (FULL PANEL WIDTH) ---
+    st.subheader("Diurnal & Nocturnal Activity Profile (24-Hour Distribution)")
+    dist_df = high_conf_df.copy()
+    dist_df["Hour"] = dist_df["Time"].dt.hour
 
-# --- DIURNAL & NOCTURNAL ACTIVITY PROFILE (FULL PANEL WIDTH) ---
-st.subheader("Diurnal & Nocturnal Activity Profile (24-Hour Distribution)")
-dist_df = high_conf_df.copy()
-dist_df["Hour"] = dist_df["Time"].dt.hour
+    hourly_counts = dist_df.groupby(["Hour", "Category"]).size().reset_index(name="Count")
 
-hourly_counts = dist_df.groupby(["Hour", "Category"]).size().reset_index(name="Count")
+    # Ensure all 24 hours (0-23) are represented
+    all_hours_df = pd.DataFrame({"Hour": list(range(24))})
+    categories_present = hourly_counts["Category"].unique() if not hourly_counts.empty else ["Bird", "Bat"]
+    full_grid = []
+    for h in range(24):
+        for cat in categories_present:
+            full_grid.append({"Hour": h, "Category": cat})
+    full_grid_df = pd.DataFrame(full_grid)
+    hourly_merged = pd.merge(full_grid_df, hourly_counts, on=["Hour", "Category"], how="left").fillna(0)
 
-# Ensure all 24 hours (0-23) are represented
-all_hours_df = pd.DataFrame({"Hour": list(range(24))})
-categories_present = hourly_counts["Category"].unique() if not hourly_counts.empty else ["Bird", "Bat"]
-full_grid = []
-for h in range(24):
-    for cat in categories_present:
-        full_grid.append({"Hour": h, "Category": cat})
-full_grid_df = pd.DataFrame(full_grid)
-hourly_merged = pd.merge(full_grid_df, hourly_counts, on=["Hour", "Category"], how="left").fillna(0)
+    fig_hourly = px.bar(
+        hourly_merged,
+        x="Hour",
+        y="Count",
+        color="Category",
+        color_discrete_map={"Bird": "#2b8a3e", "Bat": "#5f3dc4", "Other": "#868e96"},
+        barmode="stack",
+        template="plotly_white",
+        labels={"Hour": "Hour of Day (00:00 - 23:00 UTC)", "Count": "Detections Count"},
+        height=400
+    )
+    fig_hourly.update_layout(
+        margin=dict(l=0, r=0, t=20, b=10),
+        xaxis=dict(tickmode="linear", tick0=0, dtick=1),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    st.plotly_chart(fig_hourly, use_container_width=True)
 
-fig_hourly = px.bar(
-    hourly_merged,
-    x="Hour",
-    y="Count",
-    color="Category",
-    color_discrete_map={"Bird": "#2b8a3e", "Bat": "#5f3dc4", "Other": "#868e96"},
-    barmode="stack",
-    template="plotly_white",
-    labels={"Hour": "Hour of Day (00:00 - 23:00 UTC)", "Count": "Detections Count"},
-    height=400
-)
-fig_hourly.update_layout(
-    margin=dict(l=0, r=0, t=20, b=10),
-    xaxis=dict(tickmode="linear", tick0=0, dtick=1),
-    legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
-)
-st.plotly_chart(fig_hourly, use_container_width=True)
-
-st.divider()
+    st.divider()
 
 # --- RECENT DETECTIONS & TELEMETRY TABS ---
 tab_recent, tab_telemetry, tab_species_ref = st.tabs(["🕒 Recent Detections Feed", "📊 Hardware & System Telemetry", "📖 Species Reference List"])
 
 with tab_recent:
     st.subheader("Latest Recorded Detections")
-    recent = high_conf_df.sort_values("Time", ascending=False).head(50)[
-        ["Time", "Device_Friendly", "Common_Name", "Scientific_Name", "Category", "Confidence"]
-    ].copy()
-    
-    recent["Formatted_Time"] = recent["Time"].dt.strftime("%Y-%m-%d %H:%M:%S")
-    recent_display = recent[["Formatted_Time", "Device_Friendly", "Common_Name", "Scientific_Name", "Category", "Confidence"]]
-    
-    st.dataframe(
-        recent_display,
-        column_config={
-            "Formatted_Time": st.column_config.TextColumn("Timestamp (UTC)"),
-            "Device_Friendly": st.column_config.TextColumn("Device Node"),
-            "Common_Name": st.column_config.TextColumn("Common Name"),
-            "Scientific_Name": st.column_config.TextColumn("Scientific Name"),
-            "Category": st.column_config.TextColumn("Category"),
-            "Confidence": st.column_config.NumberColumn("Confidence", format="%.2f")
-        },
-        hide_index=True,
-        use_container_width=True,
-        height=350
-    )
+    if not high_conf_df.empty:
+        recent = high_conf_df.sort_values("Time", ascending=False).head(50)[
+            ["Time", "Device_Friendly", "Common_Name", "Scientific_Name", "Category", "Confidence"]
+        ].copy()
+        
+        recent["Formatted_Time"] = recent["Time"].dt.strftime("%Y-%m-%d %H:%M:%S")
+        recent_display = recent[["Formatted_Time", "Device_Friendly", "Common_Name", "Scientific_Name", "Category", "Confidence"]]
+        
+        st.dataframe(
+            recent_display,
+            column_config={
+                "Formatted_Time": st.column_config.TextColumn("Timestamp (UTC)"),
+                "Device_Friendly": st.column_config.TextColumn("Device Node"),
+                "Common_Name": st.column_config.TextColumn("Common Name"),
+                "Scientific_Name": st.column_config.TextColumn("Scientific Name"),
+                "Category": st.column_config.TextColumn("Category"),
+                "Confidence": st.column_config.NumberColumn("Confidence", format="%.2f")
+            },
+            hide_index=True,
+            use_container_width=True,
+            height=350
+        )
+    else:
+        st.info("No high-confidence detections recorded for the selected filters.")
 
 with tab_telemetry:
     st.subheader("Hardware Telemetry (Cellular & Wi-Fi Nodes)")
@@ -728,13 +815,23 @@ with tab_telemetry:
         valid_telemetry = telemetry_df.dropna(subset=t_cols, how="all")
         
         if not valid_telemetry.empty:
-            valid_telemetry["Device_Friendly"] = valid_telemetry["Device"].apply(lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d)
+            valid_telemetry["Device_Friendly"] = valid_telemetry["Device"].apply(
+                lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d
+            )
+            
+            # Filter telemetry charts by selected device if specific device selected
+            tel_plot_df = valid_telemetry
+            if selected_device != "All Devices" and "Device" in valid_telemetry.columns:
+                specific_tel = valid_telemetry[valid_telemetry["Device"] == selected_device]
+                if not specific_tel.empty:
+                    tel_plot_df = specific_tel
+            
             tel_col1, tel_col2 = st.columns(2)
             
             with tel_col1:
-                if "cpu" in valid_telemetry.columns:
+                if "cpu" in tel_plot_df.columns:
                     fig_cpu = px.line(
-                        valid_telemetry,
+                        tel_plot_df,
                         x="_time",
                         y="cpu",
                         color="Device_Friendly",
@@ -746,9 +843,9 @@ with tab_telemetry:
                     st.plotly_chart(fig_cpu, use_container_width=True)
                     
             with tel_col2:
-                if "mem_free" in valid_telemetry.columns:
+                if "mem_free" in tel_plot_df.columns:
                     fig_mem = px.line(
-                        valid_telemetry,
+                        tel_plot_df,
                         x="_time",
                         y="mem_free",
                         color="Device_Friendly",
@@ -759,10 +856,10 @@ with tab_telemetry:
                     fig_mem.update_layout(margin=dict(l=0, r=0, t=40, b=10))
                     st.plotly_chart(fig_mem, use_container_width=True)
                     
-            if "shm" in valid_telemetry.columns:
+            if "shm" in tel_plot_df.columns:
                 st.markdown("**RAM Disk (/run/shm) Space (MB)**")
                 fig_shm = px.line(
-                    valid_telemetry,
+                    tel_plot_df,
                     x="_time",
                     y="shm",
                     color="Device_Friendly",
