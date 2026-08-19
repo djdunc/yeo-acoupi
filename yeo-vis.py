@@ -188,45 +188,108 @@ def resolve_species(val):
         "category": "Other"
     }
 
-# --- DISCOVER KNOWN DEVICES ---
+# --- DISCOVER KNOWN DEVICES & DEPLOYMENTS ---
+@st.cache_data(ttl=180)
+def fetch_device_deployments():
+    """
+    Fetches the mapping of device_id to latest deployment details (name, lat, lon).
+    Returns a dict: {device_id: {"name": name, "latitude": lat, "longitude": lon, "version": version}}
+    """
+    q = f'''
+    from(bucket: "{BUCKET}")
+      |> range(start: -30d)
+      |> filter(fn: (r) => r["_measurement"] == "acoupi_deployment")
+      |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+    '''
+    mapping = {}
+    try:
+        res = query_api.query_data_frame(q)
+        if isinstance(res, list):
+            res = pd.concat(res, ignore_index=True) if len(res) > 0 else pd.DataFrame()
+        if not res.empty and "device_id" in res.columns:
+            if "_time" in res.columns:
+                res = res.sort_values("_time", ascending=False)
+            for _, row in res.iterrows():
+                dev_id = str(row["device_id"]).strip()
+                if dev_id not in mapping:
+                    mapping[dev_id] = {
+                        "name": str(row.get("name", dev_id)).strip(),
+                        "latitude": row.get("latitude", None) if pd.notna(row.get("latitude")) else None,
+                        "longitude": row.get("longitude", None) if pd.notna(row.get("longitude")) else None,
+                        "version": row.get("version", None) if pd.notna(row.get("version")) else None
+                    }
+    except Exception:
+        pass
+    return mapping
+
 @st.cache_data(ttl=180)
 def fetch_known_devices():
     """Fetches unique device identifiers with active data from InfluxDB."""
     q = f'''
     from(bucket: "{BUCKET}")
       |> range(start: -30d)
-      |> keep(columns: ["device_id"])
-      |> distinct(column: "device_id")
+      |> filter(fn: (r) => r["_measurement"] == "acoupi_detections" or r["_measurement"] == "acoupi_heartbeat" or r["_measurement"] == "acoupi_deployment")
+      |> keep(columns: ["device_id", "topic"])
     '''
+    devs = set()
     try:
         res = query_api.query_data_frame(q)
         if isinstance(res, list):
             res = pd.concat(res, ignore_index=True) if len(res) > 0 else pd.DataFrame()
         if not res.empty:
-            col = "device_id" if "device_id" in res.columns else ("_value" if "_value" in res.columns else None)
-            if col:
-                devs = [str(d).strip() for d in res[col].dropna().unique().tolist() if str(d).strip()]
-                named_devs = [d for d in devs if not d.isdigit() or len(d) <= 6 or d.lower().startswith("uno")]
-                return sorted(named_devs)
+            if "device_id" in res.columns:
+                for d in res["device_id"].dropna().unique():
+                    d_str = str(d).strip()
+                    if d_str:
+                        devs.add(d_str)
+            if "topic" in res.columns:
+                for t in res["topic"].dropna().unique():
+                    t_str = str(t).strip()
+                    parts = t_str.split("/")
+                    if len(parts) >= 3 and parts[0] == "yeo" and parts[1] == "acoupi":
+                        devs.add(parts[2])
+                    elif len(parts) >= 2 and parts[0] == "yeo":
+                        devs.add(parts[1])
     except Exception:
         pass
+        
+    cleaned = []
+    for d in devs:
+        if d.lower() not in ("nan", "none", "null", "unknown", ""):
+            cleaned.append(d)
+    if cleaned:
+        return sorted(cleaned)
     return ["uno4-cellular", "unoq-2", "unoq-4-cellular", "unoq-bat"]
 
 known_devices = fetch_known_devices()
+deployments = fetch_device_deployments()
 
 # --- SIDEBAR CONTROLS ---
 st.sidebar.markdown("## ⚙️ Dashboard Controls")
 
 # 1. Device Selection Dropdown (Placed ABOVE Time Selector)
-device_options = ["All Devices"] + known_devices
+device_display_options = {}
+display_to_id = {"All Devices": "All Devices"}
+
+for dev_id in known_devices:
+    if dev_id in deployments and deployments[dev_id]["name"]:
+        disp_name = f"{deployments[dev_id]['name']} ({dev_id})"
+    else:
+        disp_name = dev_id
+    device_display_options[dev_id] = disp_name
+    display_to_id[disp_name] = dev_id
+
+device_options = ["All Devices"] + [device_display_options[d] for d in known_devices]
+
 if "device_select_key" not in st.session_state:
     st.session_state["device_select_key"] = "All Devices"
 
-selected_device = st.sidebar.selectbox(
+selected_display = st.sidebar.selectbox(
     "Device Selection",
     options=device_options,
     key="device_select_key"
 )
+selected_device = display_to_id[selected_display]
 
 # 2. Time Window Selector
 time_options = {
@@ -296,12 +359,36 @@ hb_df = fetch_heartbeat_data()
 # Process Heartbeat Data
 active_devices_count = 0
 
+def resolve_device_id(row):
+    dev = row.get("device_id")
+    if pd.notna(dev) and str(dev).strip():
+        return str(dev).strip()
+    topic = row.get("topic")
+    if pd.notna(topic) and isinstance(topic, str):
+        parts = topic.split("/")
+        if len(parts) >= 3 and parts[0] == "yeo" and parts[1] == "acoupi":
+            return parts[2]
+        if len(parts) >= 2 and parts[0] == "yeo":
+            return parts[1]
+    return "unknown"
+
 if not hb_df.empty:
-    if "device_id" in hb_df.columns:
-        hb_df["Device"] = hb_df["device_id"].fillna(hb_df.get("topic", "unknown"))
-    else:
-        hb_df["Device"] = hb_df.get("topic", "unknown")
-    hb_df["Device"] = hb_df["Device"].astype(str).apply(lambda d: d.split("/")[1] if "/" in d else d)
+    hb_df["Device"] = hb_df.apply(resolve_device_id, axis=1)
+    
+    # Ensure standard telemetry fields exist
+    for col in ["shm", "mem_free", "cpu", "mem_used"]:
+        if col not in hb_df.columns:
+            hb_df[col] = np.nan
+
+    # Scale/fill compact telemetry fields if present
+    if "s" in hb_df.columns:
+        hb_df["shm"] = hb_df["shm"].fillna(hb_df["s"] / (1024 * 1024))
+    if "m" in hb_df.columns:
+        hb_df["mem_free"] = hb_df["mem_free"].fillna(hb_df["m"] / (1024 * 1024))
+    if "q" in hb_df.columns:
+        hb_df["cpu"] = hb_df["cpu"].fillna(hb_df["q"])
+    if "t" in hb_df.columns:
+        hb_df["mem_used"] = hb_df["mem_used"].fillna(hb_df["t"])
     
     if "_time" in hb_df.columns:
         hb_df["_time"] = pd.to_datetime(hb_df["_time"])
@@ -310,7 +397,11 @@ if not hb_df.empty:
         
         st.sidebar.markdown("### 📡 Device Status (24h)")
         for _, dev_row in latest_hb.iterrows():
-            dev_name = dev_row["Device"]
+            dev_id = dev_row["Device"]
+            friendly_name = dev_id
+            if dev_id in deployments and deployments[dev_id]["name"]:
+                friendly_name = deployments[dev_id]["name"]
+                
             last_seen = dev_row["_time"]
             diff_hours = (now_utc - last_seen).total_seconds() / 3600.0
             
@@ -325,7 +416,7 @@ if not hb_df.empty:
                 status_text = "Offline"
                 
             time_str = last_seen.strftime("%H:%M:%S (%d %b)")
-            st.sidebar.markdown(f"**{status_icon} `{dev_name}`**: {status_text}  \n<small>Last: {time_str}</small>", unsafe_allow_html=True)
+            st.sidebar.markdown(f"**{status_icon} `{friendly_name}`**: {status_text}  \n<small>Last: {time_str}</small>", unsafe_allow_html=True)
             active_devices_count += 1
             
         spark_df = hb_df.set_index("_time").resample("1h").size().reset_index(name="Pulses")
@@ -375,11 +466,8 @@ else:
     st.stop()
 
 # 2. Extract Device
-if "device_id" in df.columns:
-    df["Device"] = df["device_id"].fillna(df.get("topic", "unknown"))
-else:
-    df["Device"] = df.get("topic", "unknown")
-df["Device"] = df["Device"].astype(str).apply(lambda d: d.split("/")[1] if "/" in d else d)
+df["Device"] = df.apply(resolve_device_id, axis=1)
+df["Device_Friendly"] = df["Device"].apply(lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d)
 
 # 3. Extract Confidence Score
 confidence_series = pd.Series(index=df.index, dtype="float64")
@@ -463,15 +551,25 @@ fig_timeline = px.scatter(
         "Common_Name": True,
         "Scientific_Name": True,
         "Confidence": ":.2f",
-        "Device": True,
+        "Device_Friendly": True,
         "Category": True
     },
+    labels={"Device_Friendly": "Device"},
     template="plotly_white",
     height=420
 )
 
-# Solar Calculations for Yeo Valley / Bristol area (51.32 N, -2.71 W)
-loc = LocationInfo("Yeo Valley", "UK", "Europe/London", 51.32, -2.71)
+# Solar Calculations for selected device or Yeo Valley
+loc_lat, loc_lon = 51.32, -2.71
+loc_name = "Yeo Valley"
+if selected_device != "All Devices" and selected_device in deployments:
+    dev_info = deployments[selected_device]
+    if dev_info["latitude"] is not None and dev_info["longitude"] is not None:
+        loc_lat = dev_info["latitude"]
+        loc_lon = dev_info["longitude"]
+        loc_name = dev_info["name"]
+
+loc = LocationInfo(loc_name, "UK", "Europe/London", loc_lat, loc_lon)
 min_date = plot_df["Time"].min().date() - timedelta(days=1)
 max_date = plot_df["Time"].max().date() + timedelta(days=1)
 
@@ -583,17 +681,17 @@ tab_recent, tab_telemetry, tab_species_ref = st.tabs(["🕒 Recent Detections Fe
 with tab_recent:
     st.subheader("Latest Recorded Detections")
     recent = high_conf_df.sort_values("Time", ascending=False).head(50)[
-        ["Time", "Device", "Common_Name", "Scientific_Name", "Category", "Confidence"]
+        ["Time", "Device_Friendly", "Common_Name", "Scientific_Name", "Category", "Confidence"]
     ].copy()
     
     recent["Formatted_Time"] = recent["Time"].dt.strftime("%Y-%m-%d %H:%M:%S")
-    recent_display = recent[["Formatted_Time", "Device", "Common_Name", "Scientific_Name", "Category", "Confidence"]]
+    recent_display = recent[["Formatted_Time", "Device_Friendly", "Common_Name", "Scientific_Name", "Category", "Confidence"]]
     
     st.dataframe(
         recent_display,
         column_config={
             "Formatted_Time": st.column_config.TextColumn("Timestamp (UTC)"),
-            "Device": st.column_config.TextColumn("Device Node"),
+            "Device_Friendly": st.column_config.TextColumn("Device Node"),
             "Common_Name": st.column_config.TextColumn("Common Name"),
             "Scientific_Name": st.column_config.TextColumn("Scientific Name"),
             "Category": st.column_config.TextColumn("Category"),
@@ -606,12 +704,31 @@ with tab_recent:
 
 with tab_telemetry:
     st.subheader("Hardware Telemetry (Cellular & Wi-Fi Nodes)")
+    
+    # 1. Device deployment locations map
+    loc_data = []
+    for dev_id, info in deployments.items():
+        if info["latitude"] is not None and info["longitude"] is not None:
+            loc_data.append({
+                "Device ID": dev_id,
+                "Name": info["name"],
+                "Version": info["version"],
+                "latitude": info["latitude"],
+                "longitude": info["longitude"]
+            })
+    if loc_data:
+        loc_df = pd.DataFrame(loc_data)
+        st.markdown("### 📍 Active Node Locations")
+        st.map(loc_df, latitude="latitude", longitude="longitude")
+        st.divider()
+
     if not hb_df.empty and ("cpu" in hb_df.columns or "mem_free" in hb_df.columns or "shm" in hb_df.columns):
         telemetry_df = hb_df.dropna(subset=["_time"]).copy()
         t_cols = [c for c in ["cpu", "mem_free", "mem_used", "shm"] if c in telemetry_df.columns]
         valid_telemetry = telemetry_df.dropna(subset=t_cols, how="all")
         
         if not valid_telemetry.empty:
+            valid_telemetry["Device_Friendly"] = valid_telemetry["Device"].apply(lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d)
             tel_col1, tel_col2 = st.columns(2)
             
             with tel_col1:
@@ -620,10 +737,10 @@ with tab_telemetry:
                         valid_telemetry,
                         x="_time",
                         y="cpu",
-                        color="Device",
+                        color="Device_Friendly",
                         title="CPU Utilization (%)",
                         template="plotly_white",
-                        labels={"_time": "Time", "cpu": "CPU %"}
+                        labels={"_time": "Time", "cpu": "CPU %", "Device_Friendly": "Device"}
                     )
                     fig_cpu.update_layout(margin=dict(l=0, r=0, t=40, b=10))
                     st.plotly_chart(fig_cpu, use_container_width=True)
@@ -634,10 +751,10 @@ with tab_telemetry:
                         valid_telemetry,
                         x="_time",
                         y="mem_free",
-                        color="Device",
+                        color="Device_Friendly",
                         title="Free Memory (MB)",
                         template="plotly_white",
-                        labels={"_time": "Time", "mem_free": "RAM Free (MB)"}
+                        labels={"_time": "Time", "mem_free": "RAM Free (MB)", "Device_Friendly": "Device"}
                     )
                     fig_mem.update_layout(margin=dict(l=0, r=0, t=40, b=10))
                     st.plotly_chart(fig_mem, use_container_width=True)
@@ -648,9 +765,9 @@ with tab_telemetry:
                     valid_telemetry,
                     x="_time",
                     y="shm",
-                    color="Device",
+                    color="Device_Friendly",
                     template="plotly_white",
-                    labels={"_time": "Time", "shm": "SHM Available (MB)"}
+                    labels={"_time": "Time", "shm": "SHM Available (MB)", "Device_Friendly": "Device"}
                 )
                 fig_shm.update_layout(margin=dict(l=0, r=0, t=10, b=10), height=250)
                 st.plotly_chart(fig_shm, use_container_width=True)
