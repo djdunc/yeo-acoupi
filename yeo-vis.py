@@ -482,53 +482,56 @@ if page != "Info + Map" and not hb_df.empty:
     hb_df["Device"] = hb_df.apply(resolve_device_id, axis=1)
     hb_df = hb_df[hb_df["Device"].isin(active_devices)]
     
-    # Ensure standard telemetry fields exist
-    for col in ["shm", "mem_free", "cpu", "mem_used"]:
-        if col not in hb_df.columns:
-            hb_df[col] = np.nan
+    if not hb_df.empty:
+        # Ensure standard telemetry fields exist
+        for col in ["shm", "mem_free", "cpu", "mem_used"]:
+            if col not in hb_df.columns:
+                hb_df[col] = np.nan
 
-    # Scale/fill compact telemetry fields if present
-    if "s" in hb_df.columns:
-        hb_df["shm"] = hb_df["shm"].fillna(hb_df["s"] / (1024 * 1024))
-    if "m" in hb_df.columns:
-        hb_df["mem_free"] = hb_df["mem_free"].fillna(hb_df["m"] / (1024 * 1024))
-    if "q" in hb_df.columns:
-        hb_df["cpu"] = hb_df["cpu"].fillna(hb_df["q"])
-    if "t" in hb_df.columns:
-        hb_df["mem_used"] = hb_df["mem_used"].fillna(hb_df["t"])
-    
-    if "_time" in hb_df.columns:
-        hb_df["_time"] = pd.to_datetime(hb_df["_time"])
-        latest_hb = hb_df.sort_values("_time", ascending=False).groupby("Device").first().reset_index()
-        now_utc = pd.Timestamp.now(tz="UTC")
+        # Scale/fill compact telemetry fields if present
+        if "s" in hb_df.columns:
+            hb_df["shm"] = hb_df["shm"].fillna(hb_df["s"] / (1024 * 1024))
+        if "m" in hb_df.columns:
+            hb_df["mem_free"] = hb_df["mem_free"].fillna(hb_df["m"] / (1024 * 1024))
+        if "q" in hb_df.columns:
+            hb_df["cpu"] = hb_df["cpu"].fillna(hb_df["q"])
+        if "t" in hb_df.columns:
+            hb_df["mem_used"] = hb_df["mem_used"].fillna(hb_df["t"])
         
-        st.sidebar.markdown("### Device Status (24h)")
-        for _, dev_row in latest_hb.iterrows():
-            dev_id = dev_row["Device"]
-            friendly_name = dev_id
-            if dev_id in deployments and deployments[dev_id]["name"]:
-                friendly_name = deployments[dev_id]["name"]
-                
-            last_seen = dev_row["_time"]
-            diff_hours = (now_utc - last_seen).total_seconds() / 3600.0
+        if "_time" in hb_df.columns:
+            hb_df["_time"] = pd.to_datetime(hb_df["_time"])
+            latest_hb = hb_df.sort_values("_time", ascending=False).groupby("Device").first().reset_index()
+            now_utc = pd.Timestamp.now(tz="UTC")
             
-            if diff_hours <= 2:
-                status_icon = "🟢"
-                status_text = "Online"
-            elif diff_hours <= 12:
-                status_icon = "🟡"
-                status_text = "Stale"
-            else:
-                status_icon = "🔴"
-                status_text = "Offline"
+            st.sidebar.markdown("### Device Status (24h)")
+            for _, dev_row in latest_hb.iterrows():
+                dev_id = dev_row["Device"]
+                friendly_name = dev_id
+                if dev_id in deployments and deployments[dev_id]["name"]:
+                    friendly_name = deployments[dev_id]["name"]
+                    
+                last_seen = dev_row["_time"]
+                diff_hours = (now_utc - last_seen).total_seconds() / 3600.0
                 
-            time_str = last_seen.strftime("%H:%M:%S (%d %b)")
-            st.sidebar.markdown(f"**{status_icon} `{friendly_name}`**: {status_text}  \n<small>Last: {time_str}</small>", unsafe_allow_html=True)
-            active_devices_count += 1
-            
-        spark_df = hb_df.set_index("_time").resample("1h").size().reset_index(name="Pulses")
-        st.sidebar.markdown("**Heartbeats / Hour**")
-        st.sidebar.line_chart(spark_df, x="_time", y="Pulses", height=130)
+                if diff_hours <= 2:
+                    status_icon = "🟢"
+                    status_text = "Online"
+                elif diff_hours <= 12:
+                    status_icon = "🟡"
+                    status_text = "Stale"
+                else:
+                    status_icon = "🔴"
+                    status_text = "Offline"
+                    
+                time_str = last_seen.strftime("%H:%M:%S (%d %b)")
+                st.sidebar.markdown(f"**{status_icon} `{friendly_name}`**: {status_text}  \n<small>Last: {time_str}</small>", unsafe_allow_html=True)
+                active_devices_count += 1
+                
+            spark_df = hb_df.set_index("_time").resample("1h").size().reset_index(name="Pulses")
+            st.sidebar.markdown("**Heartbeats / Hour**")
+            st.sidebar.line_chart(spark_df, x="_time", y="Pulses", height=130)
+    else:
+        st.sidebar.warning("No heartbeat data in the last 24h")
 else:
     if page != "Info + Map":
         st.sidebar.warning("No heartbeat data in the last 24h")
@@ -694,9 +697,9 @@ if page == "Info + Map":
             with cols[col_idx]:
                 st.markdown(f"#### {row['Device Name']}")
                 
-                # Try finding the image in assets/img/
+                # Try finding the image in data/assets/img/
                 img_filename = f"{row['Device Name']}.jpeg"
-                img_path = os.path.join(os.path.dirname(__file__), "assets", "img", img_filename)
+                img_path = os.path.join(os.path.dirname(__file__), "data", "assets", "img", img_filename)
                 
                 if os.path.exists(img_path):
                     st.image(img_path, width="stretch")
