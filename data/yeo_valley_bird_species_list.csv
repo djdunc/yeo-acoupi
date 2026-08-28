@@ -1,283 +1,283 @@
-species_id,class_name,common_name,species,exclude_vis
-17,Accipiter nisus_Eurasian Sparrowhawk,Sparrowhawk,Accipiter nisus,False
-18,Acrocephalus palustris_Marsh Warbler,Marsh Warbler,Acrocephalus palustris,False
-19,Acrocephalus schoenobaenus_Sedge Warbler,Sedge Warbler,Acrocephalus schoenobaenus,False
-20,Acrocephalus scirpaceus_Eurasian Reed Warbler,Reed Warbler,Acrocephalus scirpaceus,False
-21,Actitis hypoleucos_Common Sandpiper,Common Sandpiper,Actitis hypoleucos,False
-22,Aegithalos caudatus_Long-tailed Tit,Long-tailed Tit,Aegithalos caudatus,False
-23,Aix galericulata_Mandarin Duck,Mandarin Duck,Aix galericulata,False
-24,Alauda arvensis_Eurasian Skylark,Skylark,Alauda arvensis,False
-25,Alca torda_Razorbill,Razorbill,Alca torda,True
-26,Alcedo atthis_Common Kingfisher,Kingfisher,Alcedo atthis,False
-27,Alectoris rufa_Red-legged Partridge,Red-legged Partridge,Alectoris rufa,False
-28,Alopochen aegyptiaca_Egyptian Goose,Egyptian Goose,Alopochen aegyptiaca,False
-29,Anas acuta_Northern Pintail,Pintail,Anas acuta,False
-30,Anas crecca_Green-winged Teal,Teal,Anas crecca,True
-31,Anas platyrhynchos_Mallard,Mallard,Anas platyrhynchos,False
-32,Anser albifrons_Greater White-fronted Goose,White-fronted Goose,Anser albifrons,False
-33,Anser anser_Graylag Goose,Greylag Goose,Anser anser,False
-34,Anser brachyrhynchus_Pink-footed Goose,Pink-footed Goose,Anser brachyrhynchus,False
-35,Anser serrirostris_Tundra Bean-Goose,Tundra Bean Goose,Anser serrirostris,False
-36,Anthus campestris_Tawny Pipit,Tawny Pipit,Anthus campestris,False
-37,Anthus petrosus_Rock Pipit,Rock Pipit,Anthus petrosus,True
-38,Anthus pratensis_Meadow Pipit,Meadow Pipit,Anthus pratensis,True
-39,Anthus spinoletta_Water Pipit,Water Pipit,Anthus spinoletta,False
-40,Anthus trivialis_Tree Pipit,Tree Pipit,Anthus trivialis,True
-41,Apis mellifera_Honey Bee,Honey Bee,Apis mellifera,True
-42,Apus apus_Common Swift,Swift,Apus apus,False
-43,Aquila chrysaetos_Golden Eagle,Golden Eagle,Aquila chrysaetos,False
-44,Ardea alba_Great Egret,Great White Egret,Ardea alba,False
-45,Ardea cinerea_Gray Heron,Grey Heron,Ardea cinerea,False
-46,Ardea purpurea_Purple Heron,Purple Heron,Ardea purpurea,False
-47,Ardenna grisea_Sooty Shearwater,Sooty Shearwater,Ardenna grisea,True
-48,Arenaria interpres_Ruddy Turnstone,Turnstone,Arenaria interpres,False
-49,Asio flammeus_Short-eared Owl,Short-eared Owl,Asio flammeus,False
-50,Asio otus_Long-eared Owl,Long-eared Owl,Asio otus,False
-51,Athene noctua_Little Owl,Little Owl,Athene noctua,False
-52,Aythya collaris_Ring-necked Duck,Ring-necked Duck,Aythya collaris,False
-53,Aythya ferina_Common Pochard,Pochard,Aythya ferina,False
-54,Aythya fuligula_Tufted Duck,Tufted Duck,Aythya fuligula,True
-55,Aythya marila_Greater Scaup,Scaup,Aythya marila,False
-56,Aythya nyroca_Ferruginous Duck,Ferruginous Duck,Aythya nyroca,False
-57,Bombycilla garrulus_Bohemian Waxwing,Waxwing,Bombycilla garrulus,False
-58,Botaurus stellaris_Great Bittern,Bittern,Botaurus stellaris,False
-59,Branta bernicla_Brant,Brent Goose,Branta bernicla,False
-60,Branta canadensis_Canada Goose,Canada Goose,Branta canadensis,False
-61,Branta leucopsis_Barnacle Goose,Barnacle Goose,Branta leucopsis,False
-62,Bucephala clangula_Common Goldeneye,Goldeneye,Bucephala clangula,True
-63,Burhinus oedicnemus_Eurasian Thick-knee,Stone-curlew,Burhinus oedicnemus,False
-64,Buteo buteo_Common Buzzard,Buzzard,Buteo buteo,False
-65,Calidris alba_Sanderling,Sanderling,Calidris alba,True
-66,Calidris alpina_Dunlin,Dunlin,Calidris alpina,False
-67,Calidris canutus_Red Knot,Knot,Calidris canutus,False
-68,Calidris ferruginea_Curlew Sandpiper,Curlew Sandpiper,Calidris ferruginea,True
-69,Calidris maritima_Purple Sandpiper,Purple Sandpiper,Calidris maritima,False
-70,Calidris melanotos_Pectoral Sandpiper,Pectoral Sandpiper,Calidris melanotos,False
-71,Calidris minuta_Little Stint,Little Stint,Calidris minuta,True
-72,Calidris pugnax_Ruff,Ruff,Calidris pugnax,False
-73,Calonectris diomedea_Cory's Shearwater,Scopoli's Shearwater,Calonectris diomedea,False
-74,Caprimulgus europaeus_Eurasian Nightjar,Nightjar,Caprimulgus europaeus,False
-75,Carduelis carduelis_European Goldfinch,Goldfinch,Carduelis carduelis,False
-76,Cepphus grylle_Black Guillemot,Black Guillemot,Cepphus grylle,False
-77,Certhia brachydactyla_Short-toed Treecreeper,Short-toed Treecreeper,Certhia brachydactyla,False
-78,Certhia familiaris_Eurasian Treecreeper,Treecreeper,Certhia familiaris,False
-79,Cettia cetti_Cetti's Warbler,Cetti's Warbler,Cettia cetti,False
-80,Charadrius hiaticula_Common Ringed Plover,Ringed Plover,Charadrius hiaticula,False
-81,Chlidonias hybrida_Whiskered Tern,Whiskered Tern,Chlidonias hybrida,False
-82,Chlidonias leucopterus_White-winged Tern,White-winged Black Tern,Chlidonias leucopterus,False
-83,Chlidonias niger_Black Tern,Black Tern,Chlidonias niger,True
-84,Chloris chloris_European Greenfinch,Greenfinch,Chloris chloris,True
-85,Chroicocephalus ridibundus_Black-headed Gull,Black-headed Gull,Chroicocephalus ridibundus,False
-86,Ciconia ciconia_White Stork,White Stork,Ciconia ciconia,False
-87,Ciconia nigra_Black Stork,Black Stork,Ciconia nigra,False
-88,Cinclus cinclus_White-throated Dipper,Dipper,Cinclus cinclus,False
-89,Circaetus gallicus_Short-toed Snake-Eagle,Short-toed Eagle,Circaetus gallicus,False
-90,Circus aeruginosus_Eurasian Marsh-Harrier,Marsh Harrier,Circus aeruginosus,False
-91,Circus cyaneus_Hen Harrier,Hen Harrier,Circus cyaneus,True
-92,Circus macrourus_Pallid Harrier,Pallid Harrier,Circus macrourus,False
-93,Circus pygargus_Montagu's Harrier,Montagu's Harrier,Circus pygargus,False
-94,Cisticola juncidis_Zitting Cisticola,Zitting Cisticola,Cisticola juncidis,False
-95,Clangula hyemalis_Long-tailed Duck,Long-tailed Duck,Clangula hyemalis,False
-96,Coccothraustes coccothraustes_Hawfinch,Hawfinch,Coccothraustes coccothraustes,False
-97,Columba livia_Rock Pigeon,Rock Dove,Columba livia,False
-98,Columba oenas_Stock Dove,Stock Dove,Columba oenas,True
-99,Columba palumbus_Common Wood-Pigeon,Woodpigeon,Columba palumbus,False
-100,Corvus corax_Common Raven,Raven,Corvus corax,False
-101,Corvus corone_Carrion Crow,Carrion Crow,Corvus corone,False
-102,Corvus frugilegus_Rook,Rook,Corvus frugilegus,True
-103,Coturnix coturnix_Common Quail,Quail,Coturnix coturnix,False
-104,Crex crex_Corn Crake,Corncrake,Crex crex,False
-105,Cuculus canorus_Common Cuckoo,Cuckoo,Cuculus canorus,True
-106,Curruca communis_Greater Whitethroat,Whitethroat,Curruca communis,False
-107,Curruca curruca_Lesser Whitethroat,Lesser Whitethroat,Curruca curruca,False
-108,Curruca undata_Dartford Warbler,Dartford Warbler,Curruca undata,False
-109,Cyanistes caeruleus_Eurasian Blue Tit,Blue Tit,Cyanistes caeruleus,False
-110,Cygnus columbianus_Tundra Swan,Bewick's Swan,Cygnus columbianus,False
-111,Cygnus cygnus_Whooper Swan,Whooper Swan,Cygnus cygnus,True
-112,Cygnus olor_Mute Swan,Mute Swan,Cygnus olor,False
-113,Delichon urbicum_Common House-Martin,House Martin,Delichon urbicum,True
-114,Dendrocopos major_Great Spotted Woodpecker,Great Spotted Woodpecker,Dendrocopos major,False
-115,Dog_Dog,Dog,Dog,True
-116,Dryobates minor_Lesser Spotted Woodpecker,Lesser Spotted Woodpecker,Dryobates minor,False
-117,Egretta garzetta_Little Egret,Little Egret,Egretta garzetta,False
-118,Emberiza cia_Rock Bunting,Rock Bunting,Emberiza cia,False
-119,Emberiza cirlus_Cirl Bunting,Cirl Bunting,Emberiza cirlus,False
-120,Emberiza citrinella_Yellowhammer,Yellowhammer,Emberiza citrinella,True
-121,Emberiza schoeniclus_Reed Bunting,Reed Bunting,Emberiza schoeniclus,False
-122,Engine_Engine,Engine,Engine,True
-123,Environmental_Environmental,Environmental,Environmental,True
-124,Erithacus rubecula_European Robin,Robin,Erithacus rubecula,False
-125,Falco columbarius_Merlin,Merlin,Falco columbarius,False
-126,Falco peregrinus_Peregrine Falcon,Peregrine,Falco peregrinus,False
-127,Falco subbuteo_Eurasian Hobby,Hobby,Falco subbuteo,False
-128,Falco tinnunculus_Eurasian Kestrel,Kestrel,Falco tinnunculus,True
-129,Falco vespertinus_Red-footed Falcon,Red-footed Falcon,Falco vespertinus,False
-130,Ficedula hypoleuca_European Pied Flycatcher,Pied Flycatcher,Ficedula hypoleuca,False
-131,Fireworks_Fireworks,Fireworks,Fireworks,True
-132,Fratercula arctica_Atlantic Puffin,Puffin,Fratercula arctica,False
-133,Fringilla coelebs_Common Chaffinch,Chaffinch,Fringilla coelebs,False
-134,Fringilla montifringilla_Brambling,Brambling,Fringilla montifringilla,False
-135,Fulica atra_Eurasian Coot,Coot,Fulica atra,False
-136,Fulmarus glacialis_Northern Fulmar,Fulmar,Fulmarus glacialis,True
-137,Gallinago gallinago_Common Snipe,Snipe,Gallinago gallinago,False
-138,Gallinula chloropus_Eurasian Moorhen,Moorhen,Gallinula chloropus,True
-139,Garrulus glandarius_Eurasian Jay,Jay,Garrulus glandarius,False
-140,Gavia arctica_Arctic Loon,Black-throated Diver,Gavia arctica,False
-141,Gavia immer_Common Loon,Great Northern Diver,Gavia immer,True
-142,Gavia stellata_Red-throated Loon,Red-throated Diver,Gavia stellata,True
-143,Grus grus_Common Crane,Common Crane,Grus grus,False
-144,Gun_Gun,Gun,Gun,True
-145,Haematopus ostralegus_Eurasian Oystercatcher,Oystercatcher,Haematopus ostralegus,True
-146,Haliaeetus albicilla_White-tailed Eagle,White-tailed Eagle,Haliaeetus albicilla,False
-147,Himantopus himantopus_Black-winged Stilt,Black-winged Stilt,Himantopus himantopus,False
-148,Hippolais icterina_Icterine Warbler,Icterine Warbler,Hippolais icterina,False
-149,Hippolais polyglotta_Melodious Warbler,Melodious Warbler,Hippolais polyglotta,False
-150,Hirundo rustica_Barn Swallow,Swallow,Hirundo rustica,False
-151,Human non-vocal_Human non-vocal,Human non-vocal,Human non-vocal,True
-152,Human vocal_Human vocal,Human vocal,Human vocal,True
-153,Human whistle_Human whistle,Human whistle,Human whistle,True
-154,Hydrobates leucorhous_Leach's Storm-Petrel,Leach's Storm-petrel,Hydrobates leucorhous,False
-155,Hydrobates pelagicus_European Storm-Petrel,European Storm-petrel,Hydrobates pelagicus,False
-156,Hydrocoloeus minutus_Little Gull,Little Gull,Hydrocoloeus minutus,True
-157,Hydroprogne caspia_Caspian Tern,Caspian Tern,Hydroprogne caspia,False
-158,Ichthyaetus melanocephalus_Mediterranean Gull,Mediterranean Gull,Ichthyaetus melanocephalus,False
-159,Jynx torquilla_Eurasian Wryneck,Wryneck,Jynx torquilla,False
-160,Lanius collurio_Red-backed Shrike,Red-backed Shrike,Lanius collurio,False
-161,Larus argentatus_Herring Gull,Herring Gull,Larus argentatus,False
-162,Larus cachinnans_Caspian Gull,Caspian Gull,Larus cachinnans,False
-163,Larus canus_Common Gull,Common Gull,Larus canus,True
-164,Larus delawarensis_Ring-billed Gull,Ring-billed Gull,Larus delawarensis,False
-165,Larus fuscus_Lesser Black-backed Gull,Lesser Black-backed Gull,Larus fuscus,True
-166,Larus glaucoides_Iceland Gull,Iceland Gull,Larus glaucoides,False
-167,Larus hyperboreus_Glaucous Gull,Glaucous Gull,Larus hyperboreus,False
-168,Larus marinus_Great Black-backed Gull,Great Black-backed Gull,Larus marinus,True
-169,Larus michahellis_Yellow-legged Gull,Yellow-legged Gull,Larus michahellis,False
-170,Limnodromus scolopaceus_Long-billed Dowitcher,Long-billed Dowitcher,Limnodromus scolopaceus,False
-171,Limosa lapponica_Bar-tailed Godwit,Bar-tailed Godwit,Limosa lapponica,False
-172,Limosa limosa_Black-tailed Godwit,Black-tailed Godwit,Limosa limosa,True
-173,Linaria cannabina_Eurasian Linnet,Linnet,Linaria cannabina,True
-174,Linaria flavirostris_Twite,Twite,Linaria flavirostris,False
-175,Locustella luscinioides_Savi's Warbler,Savi's Warbler,Locustella luscinioides,False
-176,Locustella naevia_Common Grasshopper-Warbler,Grasshopper Warbler,Locustella naevia,True
-177,Lophophanes cristatus_Crested Tit,Crested Tit,Lophophanes cristatus,True
-178,Loxia curvirostra_Red Crossbill,Crossbill,Loxia curvirostra,False
-179,Lullula arborea_Wood Lark,Woodlark,Lullula arborea,False
-180,Luscinia megarhynchos_Common Nightingale,Nightingale,Luscinia megarhynchos,False
-181,Luscinia svecica_Bluethroat,Bluethroat,Luscinia svecica,False
-182,Lymnocryptes minimus_Jack Snipe,Jack Snipe,Lymnocryptes minimus,False
-183,Lyrurus tetrix_Black Grouse,Black Grouse,Lyrurus tetrix,False
-184,Mareca penelope_Eurasian Wigeon,Wigeon,Mareca penelope,False
-185,Mareca strepera_Gadwall,Gadwall,Mareca strepera,False
-186,Melanitta fusca_Velvet Scoter,Velvet Scoter,Melanitta fusca,False
-187,Melanitta nigra_Common Scoter,Common Scoter,Melanitta nigra,False
-188,Mergellus albellus_Smew,Smew,Mergellus albellus,False
-189,Mergus merganser_Common Merganser,Goosander,Mergus merganser,True
-190,Mergus serrator_Red-breasted Merganser,Red-breasted Merganser,Mergus serrator,True
-191,Milvus migrans_Black Kite,Black Kite,Milvus migrans,False
-192,Milvus milvus_Red Kite,Red Kite,Milvus milvus,False
-193,Monticola saxatilis_Rufous-tailed Rock-Thrush,Rock Thrush,Monticola saxatilis,False
-194,Morus bassanus_Northern Gannet,Gannet,Morus bassanus,True
-195,Motacilla alba_White Wagtail,Pied Wagtail,Motacilla alba,False
-196,Motacilla cinerea_Gray Wagtail,Grey Wagtail,Motacilla cinerea,False
-197,Motacilla flava_Western Yellow Wagtail,Yellow Wagtail,Motacilla flava,True
-198,Muscicapa striata_Spotted Flycatcher,Spotted Flycatcher,Muscicapa striata,True
-199,Netta rufina_Red-crested Pochard,Red-crested Pochard,Netta rufina,False
-200,Noise_Noise,Noise,Noise,True
-201,Numenius arquata_Eurasian Curlew,Curlew,Numenius arquata,True
-202,Numenius phaeopus_Whimbrel,Whimbrel,Numenius phaeopus,False
-203,Nycticorax nycticorax_Black-crowned Night-Heron,Night-heron,Nycticorax nycticorax,False
-204,Oenanthe oenanthe_Northern Wheatear,Wheatear,Oenanthe oenanthe,False
-205,Oriolus oriolus_Eurasian Golden Oriole,Golden Oriole,Oriolus oriolus,False
-206,Otus scops_Eurasian Scops-Owl,Scops Owl,Otus scops,False
-207,Oxyura jamaicensis_Ruddy Duck,Ruddy Duck,Oxyura jamaicensis,False
-208,Pandion haliaetus_Osprey,Osprey,Pandion haliaetus,False
-209,Panurus biarmicus_Bearded Reedling,Bearded Tit,Panurus biarmicus,False
-210,Parus major_Great Tit,Great Tit,Parus major,False
-211,Passer domesticus_House Sparrow,House Sparrow,Passer domesticus,False
-212,Passer montanus_Eurasian Tree Sparrow,Tree Sparrow,Passer montanus,True
-213,Perdix perdix_Gray Partridge,Grey Partridge,Perdix perdix,False
-214,Periparus ater_Coal Tit,Coal Tit,Periparus ater,False
-215,Pernis apivorus_European Honey-buzzard,Honey-buzzard,Pernis apivorus,False
-216,Phalacrocorax carbo_Great Cormorant,Cormorant,Phalacrocorax carbo,False
-217,Phalaropus fulicarius_Red Phalarope,Grey Phalarope,Phalaropus fulicarius,False
-218,Phasianus colchicus_Ring-necked Pheasant,Pheasant,Phasianus colchicus,False
-219,Phoenicurus ochruros_Black Redstart,Black Redstart,Phoenicurus ochruros,True
-220,Phoenicurus phoenicurus_Common Redstart,Redstart,Phoenicurus phoenicurus,False
-221,Phylloscopus collybita_Common Chiffchaff,Chiffchaff,Phylloscopus collybita,False
-222,Phylloscopus inornatus_Yellow-browed Warbler,Yellow-browed Warbler,Phylloscopus inornatus,False
-223,Phylloscopus sibilatrix_Wood Warbler,Wood Warbler,Phylloscopus sibilatrix,False
-224,Phylloscopus trochilus_Willow Warbler,Willow Warbler,Phylloscopus trochilus,False
-225,Pica pica_Eurasian Magpie,Magpie,Pica pica,False
-226,Picus viridis_Eurasian Green Woodpecker,Green Woodpecker,Picus viridis,False
-227,Platalea leucorodia_Eurasian Spoonbill,Spoonbill,Platalea leucorodia,False
-228,Plectrophenax nivalis_Snow Bunting,Snow Bunting,Plectrophenax nivalis,False
-229,Plegadis falcinellus_Glossy Ibis,Glossy Ibis,Plegadis falcinellus,False
-230,Pluvialis apricaria_European Golden-Plover,Golden Plover,Pluvialis apricaria,False
-231,Pluvialis squatarola_Black-bellied Plover,Grey Plover,Pluvialis squatarola,False
-232,Podiceps auritus_Horned Grebe,Slavonian Grebe,Podiceps auritus,False
-233,Podiceps cristatus_Great Crested Grebe,Great Crested Grebe,Podiceps cristatus,False
-234,Podiceps grisegena_Red-necked Grebe,Red-necked Grebe,Podiceps grisegena,False
-235,Podiceps nigricollis_Eared Grebe,Black-necked Grebe,Podiceps nigricollis,False
-236,Poecile montanus_Willow Tit,Willow Tit,Poecile montanus,False
-237,Poecile palustris_Marsh Tit,Marsh Tit,Poecile palustris,False
-238,Porzana porzana_Spotted Crake,Spotted Crake,Porzana porzana,False
-239,Power tools_Power tools,Power tools,Power tools,True
-240,Prunella modularis_Dunnock,Dunnock,Prunella modularis,False
-241,Psittacula krameri_Rose-ringed Parakeet,Ring-necked Parakeet,Psittacula krameri,False
-242,Ptyonoprogne rupestris_Eurasian Crag-Martin,Crag Martin,Ptyonoprogne rupestris,False
-243,Puffinus puffinus_Manx Shearwater,Manx Shearwater,Puffinus puffinus,True
-244,Pyrrhocorax pyrrhocorax_Red-billed Chough,Chough,Pyrrhocorax pyrrhocorax,True
-245,Pyrrhula pyrrhula_Eurasian Bullfinch,Bullfinch,Pyrrhula pyrrhula,False
-246,Rallus aquaticus_Water Rail,Water Rail,Rallus aquaticus,False
-247,Recurvirostra avosetta_Pied Avocet,Avocet,Recurvirostra avosetta,True
-248,Regulus ignicapilla_Common Firecrest,Firecrest,Regulus ignicapilla,False
-249,Regulus regulus_Goldcrest,Goldcrest,Regulus regulus,False
-250,Remiz pendulinus_Eurasian Penduline-Tit,Penduline Tit,Remiz pendulinus,False
-251,Riparia riparia_Bank Swallow,Sand Martin,Riparia riparia,False
-252,Rissa tridactyla_Black-legged Kittiwake,Kittiwake,Rissa tridactyla,True
-253,Saxicola rubetra_Whinchat,Whinchat,Saxicola rubetra,False
-254,Saxicola rubicola_European Stonechat,Stonechat,Saxicola rubicola,False
-255,Scolopax rusticola_Eurasian Woodcock,Woodcock,Scolopax rusticola,True
-256,Serinus serinus_European Serin,Serin,Serinus serinus,False
-257,Siren_Siren,Siren,Siren,True
-258,Sitta europaea_Eurasian Nuthatch,Nuthatch,Sitta europaea,False
-259,Somateria mollissima_Common Eider,Eider,Somateria mollissima,False
-260,Spatula clypeata_Northern Shoveler,Shoveler,Spatula clypeata,True
-261,Spatula querquedula_Garganey,Garganey,Spatula querquedula,False
-262,Spinus spinus_Eurasian Siskin,Siskin,Spinus spinus,False
-263,Stercorarius longicaudus_Long-tailed Jaeger,Long-tailed Skua,Stercorarius longicaudus,True
-264,Stercorarius parasiticus_Parasitic Jaeger,Arctic Skua,Stercorarius parasiticus,True
-265,Stercorarius pomarinus_Pomarine Jaeger,Pomarine Skua,Stercorarius pomarinus,True
-266,Stercorarius skua_Great Skua,Great Skua,Stercorarius skua,False
-267,Sterna dougallii_Roseate Tern,Roseate Tern,Sterna dougallii,False
-268,Sterna hirundo_Common Tern,Common Tern,Sterna hirundo,True
-269,Sterna paradisaea_Arctic Tern,Arctic Tern,Sterna paradisaea,True
-270,Sternula albifrons_Little Tern,Little Tern,Sternula albifrons,True
-271,Streptopelia decaocto_Eurasian Collared-Dove,Collared Dove,Streptopelia decaocto,False
-272,Streptopelia turtur_European Turtle-Dove,Turtle Dove,Streptopelia turtur,True
-273,Strix aluco_Tawny Owl,Tawny Owl,Strix aluco,False
-274,Sturnus vulgaris_European Starling,Starling,Sturnus vulgaris,True
-275,Sylvia atricapilla_Eurasian Blackcap,Blackcap,Sylvia atricapilla,False
-276,Sylvia borin_Garden Warbler,Garden Warbler,Sylvia borin,False
-277,Tachybaptus ruficollis_Little Grebe,Little Grebe,Tachybaptus ruficollis,True
-278,Tadorna tadorna_Common Shelduck,Shelduck,Tadorna tadorna,True
-279,Thalasseus sandvicensis_Sandwich Tern,Sandwich Tern,Thalasseus sandvicensis,True
-280,Tichodroma muraria_Wallcreeper,Wallcreeper,Tichodroma muraria,False
-281,Tringa erythropus_Spotted Redshank,Spotted Redshank,Tringa erythropus,True
-282,Tringa glareola_Wood Sandpiper,Wood Sandpiper,Tringa glareola,False
-283,Tringa nebularia_Common Greenshank,Greenshank,Tringa nebularia,False
-284,Tringa ochropus_Green Sandpiper,Green Sandpiper,Tringa ochropus,False
-285,Tringa stagnatilis_Marsh Sandpiper,Marsh Sandpiper,Tringa stagnatilis,False
-286,Tringa totanus_Common Redshank,Redshank,Tringa totanus,True
-287,Troglodytes troglodytes_Eurasian Wren,Wren,Troglodytes troglodytes,False
-288,Turdus iliacus_Redwing,Redwing,Turdus iliacus,True
-289,Turdus merula_Eurasian Blackbird,Blackbird,Turdus merula,False
-290,Turdus philomelos_Song Thrush,Song Thrush,Turdus philomelos,False
-291,Turdus pilaris_Fieldfare,Fieldfare,Turdus pilaris,False
-292,Turdus torquatus_Ring Ouzel,Ring Ouzel,Turdus torquatus,False
-293,Turdus viscivorus_Mistle Thrush,Mistle Thrush,Turdus viscivorus,False
-294,Tyto alba_Barn Owl,Barn Owl,Tyto alba,False
-295,Upupa epops_Eurasian Hoopoe,Hoopoe,Upupa epops,False
-296,Uria aalge_Common Murre,Common Guillemot,Uria aalge,True
-297,Vanellus vanellus_Northern Lapwing,Lapwing,Vanellus vanellus,False
-298,Xema sabini_Sabine's Gull,Sabine's Gull,Xema sabini,False
+species_id,class_name,common_name,species,exclude_vis,exclude_messages
+17,Accipiter nisus_Eurasian Sparrowhawk,Sparrowhawk,Accipiter nisus,False,False
+18,Acrocephalus palustris_Marsh Warbler,Marsh Warbler,Acrocephalus palustris,False,False
+19,Acrocephalus schoenobaenus_Sedge Warbler,Sedge Warbler,Acrocephalus schoenobaenus,False,False
+20,Acrocephalus scirpaceus_Eurasian Reed Warbler,Reed Warbler,Acrocephalus scirpaceus,False,False
+21,Actitis hypoleucos_Common Sandpiper,Common Sandpiper,Actitis hypoleucos,False,False
+22,Aegithalos caudatus_Long-tailed Tit,Long-tailed Tit,Aegithalos caudatus,False,False
+23,Aix galericulata_Mandarin Duck,Mandarin Duck,Aix galericulata,False,False
+24,Alauda arvensis_Eurasian Skylark,Skylark,Alauda arvensis,False,False
+25,Alca torda_Razorbill,Razorbill,Alca torda,True,False
+26,Alcedo atthis_Common Kingfisher,Kingfisher,Alcedo atthis,False,False
+27,Alectoris rufa_Red-legged Partridge,Red-legged Partridge,Alectoris rufa,False,False
+28,Alopochen aegyptiaca_Egyptian Goose,Egyptian Goose,Alopochen aegyptiaca,False,False
+29,Anas acuta_Northern Pintail,Pintail,Anas acuta,False,False
+30,Anas crecca_Green-winged Teal,Teal,Anas crecca,True,False
+31,Anas platyrhynchos_Mallard,Mallard,Anas platyrhynchos,False,False
+32,Anser albifrons_Greater White-fronted Goose,White-fronted Goose,Anser albifrons,False,False
+33,Anser anser_Graylag Goose,Greylag Goose,Anser anser,False,False
+34,Anser brachyrhynchus_Pink-footed Goose,Pink-footed Goose,Anser brachyrhynchus,False,False
+35,Anser serrirostris_Tundra Bean-Goose,Tundra Bean Goose,Anser serrirostris,False,False
+36,Anthus campestris_Tawny Pipit,Tawny Pipit,Anthus campestris,False,False
+37,Anthus petrosus_Rock Pipit,Rock Pipit,Anthus petrosus,True,False
+38,Anthus pratensis_Meadow Pipit,Meadow Pipit,Anthus pratensis,True,False
+39,Anthus spinoletta_Water Pipit,Water Pipit,Anthus spinoletta,False,False
+40,Anthus trivialis_Tree Pipit,Tree Pipit,Anthus trivialis,True,False
+41,Apis mellifera_Honey Bee,Honey Bee,Apis mellifera,True,True
+42,Apus apus_Common Swift,Swift,Apus apus,False,False
+43,Aquila chrysaetos_Golden Eagle,Golden Eagle,Aquila chrysaetos,False,False
+44,Ardea alba_Great Egret,Great White Egret,Ardea alba,False,False
+45,Ardea cinerea_Gray Heron,Grey Heron,Ardea cinerea,False,False
+46,Ardea purpurea_Purple Heron,Purple Heron,Ardea purpurea,False,False
+47,Ardenna grisea_Sooty Shearwater,Sooty Shearwater,Ardenna grisea,True,False
+48,Arenaria interpres_Ruddy Turnstone,Turnstone,Arenaria interpres,False,False
+49,Asio flammeus_Short-eared Owl,Short-eared Owl,Asio flammeus,False,False
+50,Asio otus_Long-eared Owl,Long-eared Owl,Asio otus,False,False
+51,Athene noctua_Little Owl,Little Owl,Athene noctua,False,False
+52,Aythya collaris_Ring-necked Duck,Ring-necked Duck,Aythya collaris,False,False
+53,Aythya ferina_Common Pochard,Pochard,Aythya ferina,False,False
+54,Aythya fuligula_Tufted Duck,Tufted Duck,Aythya fuligula,True,False
+55,Aythya marila_Greater Scaup,Scaup,Aythya marila,False,False
+56,Aythya nyroca_Ferruginous Duck,Ferruginous Duck,Aythya nyroca,False,False
+57,Bombycilla garrulus_Bohemian Waxwing,Waxwing,Bombycilla garrulus,False,False
+58,Botaurus stellaris_Great Bittern,Bittern,Botaurus stellaris,False,False
+59,Branta bernicla_Brant,Brent Goose,Branta bernicla,False,False
+60,Branta canadensis_Canada Goose,Canada Goose,Branta canadensis,False,False
+61,Branta leucopsis_Barnacle Goose,Barnacle Goose,Branta leucopsis,False,False
+62,Bucephala clangula_Common Goldeneye,Goldeneye,Bucephala clangula,True,False
+63,Burhinus oedicnemus_Eurasian Thick-knee,Stone-curlew,Burhinus oedicnemus,False,False
+64,Buteo buteo_Common Buzzard,Buzzard,Buteo buteo,False,False
+65,Calidris alba_Sanderling,Sanderling,Calidris alba,True,False
+66,Calidris alpina_Dunlin,Dunlin,Calidris alpina,False,False
+67,Calidris canutus_Red Knot,Knot,Calidris canutus,False,False
+68,Calidris ferruginea_Curlew Sandpiper,Curlew Sandpiper,Calidris ferruginea,True,False
+69,Calidris maritima_Purple Sandpiper,Purple Sandpiper,Calidris maritima,False,False
+70,Calidris melanotos_Pectoral Sandpiper,Pectoral Sandpiper,Calidris melanotos,False,False
+71,Calidris minuta_Little Stint,Little Stint,Calidris minuta,True,False
+72,Calidris pugnax_Ruff,Ruff,Calidris pugnax,False,False
+73,Calonectris diomedea_Cory's Shearwater,Scopoli's Shearwater,Calonectris diomedea,False,False
+74,Caprimulgus europaeus_Eurasian Nightjar,Nightjar,Caprimulgus europaeus,False,False
+75,Carduelis carduelis_European Goldfinch,Goldfinch,Carduelis carduelis,False,False
+76,Cepphus grylle_Black Guillemot,Black Guillemot,Cepphus grylle,False,False
+77,Certhia brachydactyla_Short-toed Treecreeper,Short-toed Treecreeper,Certhia brachydactyla,False,False
+78,Certhia familiaris_Eurasian Treecreeper,Treecreeper,Certhia familiaris,False,False
+79,Cettia cetti_Cetti's Warbler,Cetti's Warbler,Cettia cetti,False,False
+80,Charadrius hiaticula_Common Ringed Plover,Ringed Plover,Charadrius hiaticula,False,False
+81,Chlidonias hybrida_Whiskered Tern,Whiskered Tern,Chlidonias hybrida,False,False
+82,Chlidonias leucopterus_White-winged Tern,White-winged Black Tern,Chlidonias leucopterus,False,False
+83,Chlidonias niger_Black Tern,Black Tern,Chlidonias niger,True,False
+84,Chloris chloris_European Greenfinch,Greenfinch,Chloris chloris,True,False
+85,Chroicocephalus ridibundus_Black-headed Gull,Black-headed Gull,Chroicocephalus ridibundus,False,False
+86,Ciconia ciconia_White Stork,White Stork,Ciconia ciconia,False,False
+87,Ciconia nigra_Black Stork,Black Stork,Ciconia nigra,False,False
+88,Cinclus cinclus_White-throated Dipper,Dipper,Cinclus cinclus,False,False
+89,Circaetus gallicus_Short-toed Snake-Eagle,Short-toed Eagle,Circaetus gallicus,False,False
+90,Circus aeruginosus_Eurasian Marsh-Harrier,Marsh Harrier,Circus aeruginosus,False,False
+91,Circus cyaneus_Hen Harrier,Hen Harrier,Circus cyaneus,True,False
+92,Circus macrourus_Pallid Harrier,Pallid Harrier,Circus macrourus,False,False
+93,Circus pygargus_Montagu's Harrier,Montagu's Harrier,Circus pygargus,False,False
+94,Cisticola juncidis_Zitting Cisticola,Zitting Cisticola,Cisticola juncidis,False,False
+95,Clangula hyemalis_Long-tailed Duck,Long-tailed Duck,Clangula hyemalis,False,False
+96,Coccothraustes coccothraustes_Hawfinch,Hawfinch,Coccothraustes coccothraustes,False,False
+97,Columba livia_Rock Pigeon,Rock Dove,Columba livia,False,False
+98,Columba oenas_Stock Dove,Stock Dove,Columba oenas,True,False
+99,Columba palumbus_Common Wood-Pigeon,Woodpigeon,Columba palumbus,False,False
+100,Corvus corax_Common Raven,Raven,Corvus corax,False,False
+101,Corvus corone_Carrion Crow,Carrion Crow,Corvus corone,False,False
+102,Corvus frugilegus_Rook,Rook,Corvus frugilegus,True,False
+103,Coturnix coturnix_Common Quail,Quail,Coturnix coturnix,False,False
+104,Crex crex_Corn Crake,Corncrake,Crex crex,False,False
+105,Cuculus canorus_Common Cuckoo,Cuckoo,Cuculus canorus,True,False
+106,Curruca communis_Greater Whitethroat,Whitethroat,Curruca communis,False,False
+107,Curruca curruca_Lesser Whitethroat,Lesser Whitethroat,Curruca curruca,False,False
+108,Curruca undata_Dartford Warbler,Dartford Warbler,Curruca undata,False,False
+109,Cyanistes caeruleus_Eurasian Blue Tit,Blue Tit,Cyanistes caeruleus,False,False
+110,Cygnus columbianus_Tundra Swan,Bewick's Swan,Cygnus columbianus,False,False
+111,Cygnus cygnus_Whooper Swan,Whooper Swan,Cygnus cygnus,True,False
+112,Cygnus olor_Mute Swan,Mute Swan,Cygnus olor,False,False
+113,Delichon urbicum_Common House-Martin,House Martin,Delichon urbicum,True,False
+114,Dendrocopos major_Great Spotted Woodpecker,Great Spotted Woodpecker,Dendrocopos major,False,False
+115,Dog_Dog,Dog,Dog,True,True
+116,Dryobates minor_Lesser Spotted Woodpecker,Lesser Spotted Woodpecker,Dryobates minor,False,False
+117,Egretta garzetta_Little Egret,Little Egret,Egretta garzetta,False,False
+118,Emberiza cia_Rock Bunting,Rock Bunting,Emberiza cia,False,False
+119,Emberiza cirlus_Cirl Bunting,Cirl Bunting,Emberiza cirlus,False,False
+120,Emberiza citrinella_Yellowhammer,Yellowhammer,Emberiza citrinella,True,False
+121,Emberiza schoeniclus_Reed Bunting,Reed Bunting,Emberiza schoeniclus,False,False
+122,Engine_Engine,Engine,Engine,True,True
+123,Environmental_Environmental,Environmental,Environmental,True,True
+124,Erithacus rubecula_European Robin,Robin,Erithacus rubecula,False,False
+125,Falco columbarius_Merlin,Merlin,Falco columbarius,False,False
+126,Falco peregrinus_Peregrine Falcon,Peregrine,Falco peregrinus,False,False
+127,Falco subbuteo_Eurasian Hobby,Hobby,Falco subbuteo,False,False
+128,Falco tinnunculus_Eurasian Kestrel,Kestrel,Falco tinnunculus,True,False
+129,Falco vespertinus_Red-footed Falcon,Red-footed Falcon,Falco vespertinus,False,False
+130,Ficedula hypoleuca_European Pied Flycatcher,Pied Flycatcher,Ficedula hypoleuca,False,False
+131,Fireworks_Fireworks,Fireworks,Fireworks,True,True
+132,Fratercula arctica_Atlantic Puffin,Puffin,Fratercula arctica,False,False
+133,Fringilla coelebs_Common Chaffinch,Chaffinch,Fringilla coelebs,False,False
+134,Fringilla montifringilla_Brambling,Brambling,Fringilla montifringilla,False,False
+135,Fulica atra_Eurasian Coot,Coot,Fulica atra,False,False
+136,Fulmarus glacialis_Northern Fulmar,Fulmar,Fulmarus glacialis,True,False
+137,Gallinago gallinago_Common Snipe,Snipe,Gallinago gallinago,False,False
+138,Gallinula chloropus_Eurasian Moorhen,Moorhen,Gallinula chloropus,True,False
+139,Garrulus glandarius_Eurasian Jay,Jay,Garrulus glandarius,False,False
+140,Gavia arctica_Arctic Loon,Black-throated Diver,Gavia arctica,False,False
+141,Gavia immer_Common Loon,Great Northern Diver,Gavia immer,True,False
+142,Gavia stellata_Red-throated Loon,Red-throated Diver,Gavia stellata,True,False
+143,Grus grus_Common Crane,Common Crane,Grus grus,False,False
+144,Gun_Gun,Gun,Gun,True,True
+145,Haematopus ostralegus_Eurasian Oystercatcher,Oystercatcher,Haematopus ostralegus,True,False
+146,Haliaeetus albicilla_White-tailed Eagle,White-tailed Eagle,Haliaeetus albicilla,False,False
+147,Himantopus himantopus_Black-winged Stilt,Black-winged Stilt,Himantopus himantopus,False,False
+148,Hippolais icterina_Icterine Warbler,Icterine Warbler,Hippolais icterina,False,False
+149,Hippolais polyglotta_Melodious Warbler,Melodious Warbler,Hippolais polyglotta,False,False
+150,Hirundo rustica_Barn Swallow,Swallow,Hirundo rustica,False,False
+151,Human non-vocal_Human non-vocal,Human non-vocal,Human non-vocal,True,True
+152,Human vocal_Human vocal,Human vocal,Human vocal,True,True
+153,Human whistle_Human whistle,Human whistle,Human whistle,True,True
+154,Hydrobates leucorhous_Leach's Storm-Petrel,Leach's Storm-petrel,Hydrobates leucorhous,False,False
+155,Hydrobates pelagicus_European Storm-Petrel,European Storm-petrel,Hydrobates pelagicus,False,False
+156,Hydrocoloeus minutus_Little Gull,Little Gull,Hydrocoloeus minutus,True,False
+157,Hydroprogne caspia_Caspian Tern,Caspian Tern,Hydroprogne caspia,False,False
+158,Ichthyaetus melanocephalus_Mediterranean Gull,Mediterranean Gull,Ichthyaetus melanocephalus,False,False
+159,Jynx torquilla_Eurasian Wryneck,Wryneck,Jynx torquilla,False,False
+160,Lanius collurio_Red-backed Shrike,Red-backed Shrike,Lanius collurio,False,False
+161,Larus argentatus_Herring Gull,Herring Gull,Larus argentatus,False,False
+162,Larus cachinnans_Caspian Gull,Caspian Gull,Larus cachinnans,False,False
+163,Larus canus_Common Gull,Common Gull,Larus canus,True,False
+164,Larus delawarensis_Ring-billed Gull,Ring-billed Gull,Larus delawarensis,False,False
+165,Larus fuscus_Lesser Black-backed Gull,Lesser Black-backed Gull,Larus fuscus,True,False
+166,Larus glaucoides_Iceland Gull,Iceland Gull,Larus glaucoides,False,False
+167,Larus hyperboreus_Glaucous Gull,Glaucous Gull,Larus hyperboreus,False,False
+168,Larus marinus_Great Black-backed Gull,Great Black-backed Gull,Larus marinus,True,False
+169,Larus michahellis_Yellow-legged Gull,Yellow-legged Gull,Larus michahellis,False,False
+170,Limnodromus scolopaceus_Long-billed Dowitcher,Long-billed Dowitcher,Limnodromus scolopaceus,False,False
+171,Limosa lapponica_Bar-tailed Godwit,Bar-tailed Godwit,Limosa lapponica,False,False
+172,Limosa limosa_Black-tailed Godwit,Black-tailed Godwit,Limosa limosa,True,False
+173,Linaria cannabina_Eurasian Linnet,Linnet,Linaria cannabina,True,False
+174,Linaria flavirostris_Twite,Twite,Linaria flavirostris,False,False
+175,Locustella luscinioides_Savi's Warbler,Savi's Warbler,Locustella luscinioides,False,False
+176,Locustella naevia_Common Grasshopper-Warbler,Grasshopper Warbler,Locustella naevia,True,False
+177,Lophophanes cristatus_Crested Tit,Crested Tit,Lophophanes cristatus,True,False
+178,Loxia curvirostra_Red Crossbill,Crossbill,Loxia curvirostra,False,False
+179,Lullula arborea_Wood Lark,Woodlark,Lullula arborea,False,False
+180,Luscinia megarhynchos_Common Nightingale,Nightingale,Luscinia megarhynchos,False,False
+181,Luscinia svecica_Bluethroat,Bluethroat,Luscinia svecica,False,False
+182,Lymnocryptes minimus_Jack Snipe,Jack Snipe,Lymnocryptes minimus,False,False
+183,Lyrurus tetrix_Black Grouse,Black Grouse,Lyrurus tetrix,False,False
+184,Mareca penelope_Eurasian Wigeon,Wigeon,Mareca penelope,False,False
+185,Mareca strepera_Gadwall,Gadwall,Mareca strepera,False,False
+186,Melanitta fusca_Velvet Scoter,Velvet Scoter,Melanitta fusca,False,False
+187,Melanitta nigra_Common Scoter,Common Scoter,Melanitta nigra,False,False
+188,Mergellus albellus_Smew,Smew,Mergellus albellus,False,False
+189,Mergus merganser_Common Merganser,Goosander,Mergus merganser,True,False
+190,Mergus serrator_Red-breasted Merganser,Red-breasted Merganser,Mergus serrator,True,False
+191,Milvus migrans_Black Kite,Black Kite,Milvus migrans,False,False
+192,Milvus milvus_Red Kite,Red Kite,Milvus milvus,False,False
+193,Monticola saxatilis_Rufous-tailed Rock-Thrush,Rock Thrush,Monticola saxatilis,False,False
+194,Morus bassanus_Northern Gannet,Gannet,Morus bassanus,True,False
+195,Motacilla alba_White Wagtail,Pied Wagtail,Motacilla alba,False,False
+196,Motacilla cinerea_Gray Wagtail,Grey Wagtail,Motacilla cinerea,False,False
+197,Motacilla flava_Western Yellow Wagtail,Yellow Wagtail,Motacilla flava,True,False
+198,Muscicapa striata_Spotted Flycatcher,Spotted Flycatcher,Muscicapa striata,True,False
+199,Netta rufina_Red-crested Pochard,Red-crested Pochard,Netta rufina,False,False
+200,Noise_Noise,Noise,Noise,True,True
+201,Numenius arquata_Eurasian Curlew,Curlew,Numenius arquata,True,False
+202,Numenius phaeopus_Whimbrel,Whimbrel,Numenius phaeopus,False,False
+203,Nycticorax nycticorax_Black-crowned Night-Heron,Night-heron,Nycticorax nycticorax,False,False
+204,Oenanthe oenanthe_Northern Wheatear,Wheatear,Oenanthe oenanthe,False,False
+205,Oriolus oriolus_Eurasian Golden Oriole,Golden Oriole,Oriolus oriolus,False,False
+206,Otus scops_Eurasian Scops-Owl,Scops Owl,Otus scops,False,False
+207,Oxyura jamaicensis_Ruddy Duck,Ruddy Duck,Oxyura jamaicensis,False,False
+208,Pandion haliaetus_Osprey,Osprey,Pandion haliaetus,False,False
+209,Panurus biarmicus_Bearded Reedling,Bearded Tit,Panurus biarmicus,False,False
+210,Parus major_Great Tit,Great Tit,Parus major,False,False
+211,Passer domesticus_House Sparrow,House Sparrow,Passer domesticus,False,False
+212,Passer montanus_Eurasian Tree Sparrow,Tree Sparrow,Passer montanus,True,False
+213,Perdix perdix_Gray Partridge,Grey Partridge,Perdix perdix,False,False
+214,Periparus ater_Coal Tit,Coal Tit,Periparus ater,False,False
+215,Pernis apivorus_European Honey-buzzard,Honey-buzzard,Pernis apivorus,False,False
+216,Phalacrocorax carbo_Great Cormorant,Cormorant,Phalacrocorax carbo,False,False
+217,Phalaropus fulicarius_Red Phalarope,Grey Phalarope,Phalaropus fulicarius,False,False
+218,Phasianus colchicus_Ring-necked Pheasant,Pheasant,Phasianus colchicus,False,False
+219,Phoenicurus ochruros_Black Redstart,Black Redstart,Phoenicurus ochruros,True,False
+220,Phoenicurus phoenicurus_Common Redstart,Redstart,Phoenicurus phoenicurus,False,False
+221,Phylloscopus collybita_Common Chiffchaff,Chiffchaff,Phylloscopus collybita,False,False
+222,Phylloscopus inornatus_Yellow-browed Warbler,Yellow-browed Warbler,Phylloscopus inornatus,False,False
+223,Phylloscopus sibilatrix_Wood Warbler,Wood Warbler,Phylloscopus sibilatrix,False,False
+224,Phylloscopus trochilus_Willow Warbler,Willow Warbler,Phylloscopus trochilus,False,False
+225,Pica pica_Eurasian Magpie,Magpie,Pica pica,False,False
+226,Picus viridis_Eurasian Green Woodpecker,Green Woodpecker,Picus viridis,False,False
+227,Platalea leucorodia_Eurasian Spoonbill,Spoonbill,Platalea leucorodia,False,False
+228,Plectrophenax nivalis_Snow Bunting,Snow Bunting,Plectrophenax nivalis,False,False
+229,Plegadis falcinellus_Glossy Ibis,Glossy Ibis,Plegadis falcinellus,False,False
+230,Pluvialis apricaria_European Golden-Plover,Golden Plover,Pluvialis apricaria,False,False
+231,Pluvialis squatarola_Black-bellied Plover,Grey Plover,Pluvialis squatarola,False,False
+232,Podiceps auritus_Horned Grebe,Slavonian Grebe,Podiceps auritus,False,False
+233,Podiceps cristatus_Great Crested Grebe,Great Crested Grebe,Podiceps cristatus,False,False
+234,Podiceps grisegena_Red-necked Grebe,Red-necked Grebe,Podiceps grisegena,False,False
+235,Podiceps nigricollis_Eared Grebe,Black-necked Grebe,Podiceps nigricollis,False,False
+236,Poecile montanus_Willow Tit,Willow Tit,Poecile montanus,False,False
+237,Poecile palustris_Marsh Tit,Marsh Tit,Poecile palustris,False,False
+238,Porzana porzana_Spotted Crake,Spotted Crake,Porzana porzana,False,False
+239,Power tools_Power tools,Power tools,Power tools,True,True
+240,Prunella modularis_Dunnock,Dunnock,Prunella modularis,False,False
+241,Psittacula krameri_Rose-ringed Parakeet,Ring-necked Parakeet,Psittacula krameri,False,False
+242,Ptyonoprogne rupestris_Eurasian Crag-Martin,Crag Martin,Ptyonoprogne rupestris,False,False
+243,Puffinus puffinus_Manx Shearwater,Manx Shearwater,Puffinus puffinus,True,False
+244,Pyrrhocorax pyrrhocorax_Red-billed Chough,Chough,Pyrrhocorax pyrrhocorax,True,False
+245,Pyrrhula pyrrhula_Eurasian Bullfinch,Bullfinch,Pyrrhula pyrrhula,False,False
+246,Rallus aquaticus_Water Rail,Water Rail,Rallus aquaticus,False,False
+247,Recurvirostra avosetta_Pied Avocet,Avocet,Recurvirostra avosetta,True,False
+248,Regulus ignicapilla_Common Firecrest,Firecrest,Regulus ignicapilla,False,False
+249,Regulus regulus_Goldcrest,Goldcrest,Regulus regulus,False,False
+250,Remiz pendulinus_Eurasian Penduline-Tit,Penduline Tit,Remiz pendulinus,False,False
+251,Riparia riparia_Bank Swallow,Sand Martin,Riparia riparia,False,False
+252,Rissa tridactyla_Black-legged Kittiwake,Kittiwake,Rissa tridactyla,True,False
+253,Saxicola rubetra_Whinchat,Whinchat,Saxicola rubetra,False,False
+254,Saxicola rubicola_European Stonechat,Stonechat,Saxicola rubicola,False,False
+255,Scolopax rusticola_Eurasian Woodcock,Woodcock,Scolopax rusticola,True,False
+256,Serinus serinus_European Serin,Serin,Serinus serinus,False,False
+257,Siren_Siren,Siren,Siren,True,True
+258,Sitta europaea_Eurasian Nuthatch,Nuthatch,Sitta europaea,False,False
+259,Somateria mollissima_Common Eider,Eider,Somateria mollissima,False,False
+260,Spatula clypeata_Northern Shoveler,Shoveler,Spatula clypeata,True,False
+261,Spatula querquedula_Garganey,Garganey,Spatula querquedula,False,False
+262,Spinus spinus_Eurasian Siskin,Siskin,Spinus spinus,False,False
+263,Stercorarius longicaudus_Long-tailed Jaeger,Long-tailed Skua,Stercorarius longicaudus,True,False
+264,Stercorarius parasiticus_Parasitic Jaeger,Arctic Skua,Stercorarius parasiticus,True,False
+265,Stercorarius pomarinus_Pomarine Jaeger,Pomarine Skua,Stercorarius pomarinus,True,False
+266,Stercorarius skua_Great Skua,Great Skua,Stercorarius skua,False,False
+267,Sterna dougallii_Roseate Tern,Roseate Tern,Sterna dougallii,False,False
+268,Sterna hirundo_Common Tern,Common Tern,Sterna hirundo,True,False
+269,Sterna paradisaea_Arctic Tern,Arctic Tern,Sterna paradisaea,True,False
+270,Sternula albifrons_Little Tern,Little Tern,Sternula albifrons,True,False
+271,Streptopelia decaocto_Eurasian Collared-Dove,Collared Dove,Streptopelia decaocto,False,False
+272,Streptopelia turtur_European Turtle-Dove,Turtle Dove,Streptopelia turtur,True,False
+273,Strix aluco_Tawny Owl,Tawny Owl,Strix aluco,False,False
+274,Sturnus vulgaris_European Starling,Starling,Sturnus vulgaris,True,False
+275,Sylvia atricapilla_Eurasian Blackcap,Blackcap,Sylvia atricapilla,False,False
+276,Sylvia borin_Garden Warbler,Garden Warbler,Sylvia borin,False,False
+277,Tachybaptus ruficollis_Little Grebe,Little Grebe,Tachybaptus ruficollis,True,False
+278,Tadorna tadorna_Common Shelduck,Shelduck,Tadorna tadorna,True,False
+279,Thalasseus sandvicensis_Sandwich Tern,Sandwich Tern,Thalasseus sandvicensis,True,False
+280,Tichodroma muraria_Wallcreeper,Wallcreeper,Tichodroma muraria,False,False
+281,Tringa erythropus_Spotted Redshank,Spotted Redshank,Tringa erythropus,True,False
+282,Tringa glareola_Wood Sandpiper,Wood Sandpiper,Tringa glareola,False,False
+283,Tringa nebularia_Common Greenshank,Greenshank,Tringa nebularia,False,False
+284,Tringa ochropus_Green Sandpiper,Green Sandpiper,Tringa ochropus,False,False
+285,Tringa stagnatilis_Marsh Sandpiper,Marsh Sandpiper,Tringa stagnatilis,False,False
+286,Tringa totanus_Common Redshank,Redshank,Tringa totanus,True,False
+287,Troglodytes troglodytes_Eurasian Wren,Wren,Troglodytes troglodytes,False,False
+288,Turdus iliacus_Redwing,Redwing,Turdus iliacus,True,False
+289,Turdus merula_Eurasian Blackbird,Blackbird,Turdus merula,False,False
+290,Turdus philomelos_Song Thrush,Song Thrush,Turdus philomelos,False,False
+291,Turdus pilaris_Fieldfare,Fieldfare,Turdus pilaris,False,False
+292,Turdus torquatus_Ring Ouzel,Ring Ouzel,Turdus torquatus,False,False
+293,Turdus viscivorus_Mistle Thrush,Mistle Thrush,Turdus viscivorus,False,False
+294,Tyto alba_Barn Owl,Barn Owl,Tyto alba,False,False
+295,Upupa epops_Eurasian Hoopoe,Hoopoe,Upupa epops,False,False
+296,Uria aalge_Common Murre,Common Guillemot,Uria aalge,True,False
+297,Vanellus vanellus_Northern Lapwing,Lapwing,Vanellus vanellus,False,False
+298,Xema sabini_Sabine's Gull,Sabine's Gull,Xema sabini,False,False

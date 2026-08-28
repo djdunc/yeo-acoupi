@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
+import pydeck as pdk
 from influxdb_client import InfluxDBClient
 from astral import LocationInfo
 from astral.sun import sun
@@ -11,6 +12,17 @@ from datetime import datetime, timedelta
 import warnings
 
 warnings.simplefilter("ignore")
+
+# --- DEPLOYED DEVICES SPECIFICATION ---
+DEPLOYED_NAMES = {"UNOQ-10-YV", "UNOQ-11-YV", "UNOQ-12-YV"}
+
+def is_deployed(dev_id, deployments_map):
+    """Checks if a device ID or friendly name belongs to the deployed set."""
+    if dev_id in deployments_map and deployments_map[dev_id].get("name") in DEPLOYED_NAMES:
+        return True
+    if dev_id in DEPLOYED_NAMES:
+        return True
+    return False
 
 # --- CONFIGURATION & SECRETS ---
 st.set_page_config(
@@ -329,80 +341,105 @@ for d in deployments.keys():
         known_devices.append(d)
 known_devices = sorted(list(set(known_devices)))
 
+# --- SIDEBAR NAVIGATION ---
+st.sidebar.markdown("## Devices")
+page = st.sidebar.radio(
+    "Select:",
+    ["Deployed Devices", "Test / Setup Devices", "Info + Map"],
+    index=0
+)
+
+# Determine active devices based on current page
+if page == "Deployed Devices":
+    active_devices = [d for d in known_devices if is_deployed(d, deployments)]
+elif page == "Test / Setup Devices":
+    active_devices = [d for d in known_devices if not is_deployed(d, deployments)]
+else:
+    active_devices = known_devices
+
 # --- SIDEBAR CONTROLS ---
-st.sidebar.markdown("## ⚙️ Dashboard Controls")
+if page != "Info + Map":
+    st.sidebar.markdown("## Dashboard Controls")
 
-# 1. Device Selection Dropdown (Placed ABOVE Time Selector)
-device_display_options = {}
-display_to_id = {"All Devices": "All Devices"}
+    # 1. Device Selection Dropdown (Placed ABOVE Time Selector)
+    device_display_options = {}
+    display_to_id = {"All Devices": "All Devices"}
 
-for dev_id in known_devices:
-    if dev_id in deployments and deployments[dev_id]["name"]:
-        disp_name = f"{deployments[dev_id]['name']} ({dev_id})"
-    else:
-        disp_name = dev_id
-    device_display_options[dev_id] = disp_name
-    display_to_id[disp_name] = dev_id
+    for dev_id in active_devices:
+        if dev_id in deployments and deployments[dev_id]["name"]:
+            disp_name = f"{deployments[dev_id]['name']} ({dev_id})"
+        else:
+            disp_name = dev_id
+        device_display_options[dev_id] = disp_name
+        display_to_id[disp_name] = dev_id
 
-device_options = ["All Devices"] + [device_display_options[d] for d in known_devices]
+    device_options = ["All Devices"] + [device_display_options[d] for d in active_devices if d in device_display_options]
 
-# Retain previously selected display or default
-current_device_selection = st.session_state.get("device_select_key", "All Devices")
-device_idx = device_options.index(current_device_selection) if current_device_selection in device_options else 0
+    # Retain previously selected display or default
+    current_device_selection = st.session_state.get("device_select_key", "All Devices")
+    device_idx = device_options.index(current_device_selection) if current_device_selection in device_options else 0
 
-selected_display = st.sidebar.selectbox(
-    "Device Selection",
-    options=device_options,
-    index=device_idx,
-    key="device_select_key"
-)
-selected_device = display_to_id.get(selected_display, selected_display)
+    selected_display = st.sidebar.selectbox(
+        "Device Selection",
+        options=device_options,
+        index=device_idx,
+        key="device_select_key"
+    )
+    selected_device = display_to_id.get(selected_display, selected_display)
 
-# 2. Time Window Selector
-time_options = {
-    "Last 24 Hours": "-24h",
-    "Last 2 Days": "-2d",
-    "Last 7 Days": "-7d",
-    "Last 14 Days": "-14d",
-    "Last 30 Days": "-30d"
-}
-time_labels = list(time_options.keys())
+    # 2. Time Window Selector
+    time_options = {
+        "Last 24 Hours": "-24h",
+        "Last 2 Days": "-2d",
+        "Last 7 Days": "-7d",
+        "Last 14 Days": "-14d",
+        "Last 30 Days": "-30d"
+    }
+    time_labels = list(time_options.keys())
 
-current_time_selection = st.session_state.get("time_window_key", "Last 7 Days")
-time_idx = time_labels.index(current_time_selection) if current_time_selection in time_labels else 2
+    current_time_selection = st.session_state.get("time_window_key", "Last 7 Days")
+    time_idx = time_labels.index(current_time_selection) if current_time_selection in time_labels else 2
 
-selected_time_label = st.sidebar.selectbox(
-    "Time Window",
-    options=time_labels,
-    index=time_idx,
-    key="time_window_key"
-)
-selected_time_val = time_options[selected_time_label]
+    selected_time_label = st.sidebar.selectbox(
+        "Time Window",
+        options=time_labels,
+        index=time_idx,
+        key="time_window_key"
+    )
+    selected_time_val = time_options[selected_time_label]
 
-# 3. Confidence Threshold
-confidence_threshold = st.sidebar.slider(
-    "Confidence Threshold",
-    min_value=0.0,
-    max_value=1.0,
-    value=float(st.session_state.get("conf_threshold_key", 0.50)),
-    step=0.05,
-    key="conf_threshold_key",
-    help="Filter detections below this model confidence score"
-)
+    # 3. Confidence Threshold
+    confidence_threshold = st.sidebar.slider(
+        "Confidence Threshold",
+        min_value=0.0,
+        max_value=1.0,
+        value=float(st.session_state.get("conf_threshold_key", 0.50)),
+        step=0.05,
+        key="conf_threshold_key",
+        help="Filter detections below this model confidence score"
+    )
 
-# 4. Taxa / Category Filter
-category_options = ["All Species (Birds & Bats)", "Birds Only 🐦", "Bats Only 🦇", "All Detections (incl. Other)"]
-current_cat_selection = st.session_state.get("category_filter_key", "All Species (Birds & Bats)")
-cat_idx = category_options.index(current_cat_selection) if current_cat_selection in category_options else 0
+    # 4. Taxa / Category Filter
+    category_options = ["All Species (Birds & Bats)", "Birds Only 🐦", "Bats Only 🦇", "All Detections (incl. Other)"]
+    current_cat_selection = st.session_state.get("category_filter_key", "All Species (Birds & Bats)")
+    cat_idx = category_options.index(current_cat_selection) if current_cat_selection in category_options else 0
 
-category_filter = st.sidebar.selectbox(
-    "Taxa / Category Filter",
-    options=category_options,
-    index=cat_idx,
-    key="category_filter_key"
-)
+    category_filter = st.sidebar.selectbox(
+        "Taxa / Category Filter",
+        options=category_options,
+        index=cat_idx,
+        key="category_filter_key"
+    )
 
-st.sidebar.divider()
+    st.sidebar.divider()
+else:
+    # Fallback default values for variables to avoid UnboundLocalError when skipping controls
+    selected_device = "All Devices"
+    selected_display = "All Devices"
+    selected_time_val = "-7d"
+    selected_time_label = "Last 7 Days"
+    confidence_threshold = 0.50
+    category_filter = "All Species (Birds & Bats)"
 
 # --- HEARTBEAT & SYSTEM TELEMETRY QUERY ---
 @st.cache_data(ttl=60)
@@ -421,7 +458,9 @@ def fetch_heartbeat_data():
     except Exception:
         return pd.DataFrame()
 
-hb_df = fetch_heartbeat_data()
+hb_df = pd.DataFrame()
+if page != "Info + Map":
+    hb_df = fetch_heartbeat_data()
 
 # Process Heartbeat Data
 active_devices_count = 0
@@ -439,8 +478,9 @@ def resolve_device_id(row):
             return parts[1]
     return "unknown"
 
-if not hb_df.empty:
+if page != "Info + Map" and not hb_df.empty:
     hb_df["Device"] = hb_df.apply(resolve_device_id, axis=1)
+    hb_df = hb_df[hb_df["Device"].isin(active_devices)]
     
     # Ensure standard telemetry fields exist
     for col in ["shm", "mem_free", "cpu", "mem_used"]:
@@ -462,7 +502,7 @@ if not hb_df.empty:
         latest_hb = hb_df.sort_values("_time", ascending=False).groupby("Device").first().reset_index()
         now_utc = pd.Timestamp.now(tz="UTC")
         
-        st.sidebar.markdown("### 📡 Device Status (24h)")
+        st.sidebar.markdown("### Device Status (24h)")
         for _, dev_row in latest_hb.iterrows():
             dev_id = dev_row["Device"]
             friendly_name = dev_id
@@ -490,7 +530,8 @@ if not hb_df.empty:
         st.sidebar.markdown("**Heartbeats / Hour**")
         st.sidebar.line_chart(spark_df, x="_time", y="Pulses", height=130)
 else:
-    st.sidebar.warning("No heartbeat data in the last 24h")
+    if page != "Info + Map":
+        st.sidebar.warning("No heartbeat data in the last 24h")
 
 # --- DETECTIONS QUERY ---
 @st.cache_data(ttl=60)
@@ -510,11 +551,169 @@ def fetch_detection_data(time_val):
     except Exception:
         return pd.DataFrame()
 
-raw_df = fetch_detection_data(selected_time_val)
+def render_sensor_map(loc_df, key_suffix=""):
+    """Renders a Leaflet.js map with Satellite / Street toggle and auto-fit zoom."""
+    if loc_df.empty:
+        st.info("No active device locations mapped in current view.")
+        return
+
+    # Normalize column names for the Leaflet script
+    plot_df = loc_df.copy()
+    if "Device Name" not in plot_df.columns and "Name" in plot_df.columns:
+        plot_df["Device Name"] = plot_df["Name"]
+    if "Device ID / MAC" not in plot_df.columns and "Device ID" in plot_df.columns:
+        plot_df["Device ID / MAC"] = plot_df["Device ID"]
+
+    # Convert to JSON for JS consumption
+    markers_json = plot_df[["Device Name", "Device ID / MAC", "latitude", "longitude"]].to_json(orient="records")
+
+    # Generate Leaflet HTML
+    leaflet_html = f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+        <style>
+            html, body, #map {{
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }}
+        </style>
+    </head>
+    <body>
+        <div id="map"></div>
+        <script>
+            // Initialize map with a fallback center
+            var map = L.map('map').setView([51.32, -2.71], 11);
+
+            // Esri World Imagery (Satellite)
+            var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
+                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                maxZoom: 19
+            }});
+
+            // OpenStreetMap (Streets)
+            var streets = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }});
+
+            // Default to satellite basemap
+            satellite.addTo(map);
+
+            var baseMaps = {{
+                "Satellite View": satellite,
+                "Standard Map": streets
+            }};
+
+            L.control.layers(baseMaps).addTo(map);
+
+            // Load and plot markers
+            var markersData = {markers_json};
+            var bounds = [];
+
+            markersData.forEach(function(m) {{
+                var lat = m.latitude;
+                var lon = m.longitude;
+                if (lat !== null && lon !== null) {{
+                    var marker = L.marker([lat, lon]).addTo(map);
+                    var popupContent = "<b>" + m["Device Name"] + "</b><br>ID: " + m["Device ID / MAC"];
+                    marker.bindPopup(popupContent);
+                    bounds.push([lat, lon]);
+                }}
+            }});
+
+            // Use IntersectionObserver to fit bounds once the map container becomes visible in the DOM
+            var mapEl = document.getElementById('map');
+            var observer = new IntersectionObserver(function(entries) {{
+                entries.forEach(function(entry) {{
+                    if (entry.isIntersecting) {{
+                        map.invalidateSize();
+                        if (bounds.length > 0) {{
+                            map.fitBounds(bounds, {{ padding: [30, 30] }});
+                        }}
+                        // Trigger only once on first visibility
+                        observer.unobserve(entry.target);
+                    }}
+                }});
+            }}, {{ threshold: 0.1 }});
+
+            observer.observe(mapEl);
+        </script>
+    </body>
+    </html>
+    """
+
+    # Render in Streamlit using the HTML component
+    st.components.v1.html(leaflet_html, height=500)
+
+raw_df = pd.DataFrame()
+if page != "Info + Map":
+    raw_df = fetch_detection_data(selected_time_val)
 
 # --- HEADER TITLE ---
 st.title("🌿 Yeo Valley Bioacoustic Monitoring")
-st.markdown("Real-time bioacoustic detection & telemetry dashboard powered by **Acoupi Uno Q** & **InfluxDB**.")
+
+if page == "Info + Map":
+    st.markdown("### About the Project")
+    st.markdown("""
+    This project monitors bioacoustic activity across the Yeo Valley estate. Smart bioacoustic monitoring nodes (**Acoupi Uno Q**) capture ambient recordings in the field, process them using BirdNET models, and stream detection metadata and system telemetry in real-time over Wi-Fi, LoraWAN and Cellular networks to a central InfluxDB database.
+
+    The monitoring nodes are classified into two groups:
+    * **Deployed Devices**: Officially deployed nodes actively recording biodiversity across specific sectors.
+    * **Test / Setup Devices**: Protoype or temporary nodes undergoing testing, calibration, or setup before field installation.
+    """)
+
+    # Generate Map and List of Deployed Devices
+    loc_data = []
+    for dev_id, info in deployments.items():
+        if is_deployed(dev_id, deployments):
+            if info["latitude"] is not None and info["longitude"] is not None:
+                loc_data.append({
+                    "Device Name": info["name"],
+                    "Device ID / MAC": dev_id,
+                    "latitude": info["latitude"],
+                    "longitude": info["longitude"],
+                    "Firmware Version": info["version"] or "Unknown"
+                })
+
+    if loc_data:
+        st.markdown("### Deployed Device Locations")
+        loc_df = pd.DataFrame(loc_data)
+        render_sensor_map(loc_df, key_suffix="info_map")
+
+        st.markdown("### Deployed Nodes Details")
+        cols = st.columns(3)
+        for idx, row in loc_df.iterrows():
+            col_idx = idx % 3
+            with cols[col_idx]:
+                st.markdown(f"#### {row['Device Name']}")
+                
+                # Try finding the image in assets/img/
+                img_filename = f"{row['Device Name']}.jpeg"
+                img_path = os.path.join(os.path.dirname(__file__), "assets", "img", img_filename)
+                
+                if os.path.exists(img_path):
+                    st.image(img_path, width="stretch")
+                else:
+                    st.caption("*(No deployment image available)*")
+                
+                maps_url = f"https://www.google.com/maps/search/?api=1&query={row['latitude']},{row['longitude']}"
+                st.markdown(f"**MAC Address:** `{row['Device ID / MAC']}`  \n**Firmware:** `{row['Firmware Version']}`  \n**Coordinates:** [{row['latitude']:.5f}, {row['longitude']:.5f}]({maps_url})")
+    else:
+        st.info("No deployed device locations found in InfluxDB metadata.")
+
+    st.divider()
+    st.caption("Page developed by UCL in collaboration with Yeo Valley.  \nAny errors or issues with this page please contact Duncan Wilson (d.j.wilson@ucl.ac.uk)")
+    st.stop()
+
+else:
+    st.markdown("Real-time bioacoustic detection & telemetry dashboard powered by **Acoupi Uno Q** & **InfluxDB**.")
 
 # --- DATA PROCESSING & RESOLUTION ---
 df = pd.DataFrame()
@@ -535,6 +734,7 @@ if not raw_df.empty:
 
     # 2. Extract Device
     df["Device"] = df.apply(resolve_device_id, axis=1)
+    df = df[df["Device"].isin(active_devices)]
     df["Device_Friendly"] = df["Device"].apply(
         lambda d: f"{deployments[d]['name']} ({d})" if d in deployments and deployments[d]["name"] else d
     )
@@ -612,7 +812,7 @@ elif high_conf_df.empty:
     )
 else:
     # --- TIMELINE VISUALIZATION (FULL WIDTH) ---
-    st.subheader(f"📈 Species Activity Timeline (Confidence ≥ {confidence_threshold:.2f})")
+    st.subheader(f"Species Activity Timeline (Confidence ≥ {confidence_threshold:.2f})")
 
     # Limit to top 15 species for timeline visual clarity
     top_timeline_species = high_conf_df["Common_Name"].value_counts().nlargest(15).index.tolist()
@@ -662,16 +862,18 @@ else:
         try:
             s_curr = sun(loc.observer, date=curr_date)
             s_next = sun(loc.observer, date=curr_date + timedelta(days=1))
-            fig_timeline.add_vrect(
-                x0=s_curr["sunset"],
-                x1=s_next["sunrise"],
-                fillcolor="rgba(30, 41, 59, 0.08)",
-                opacity=1,
-                layer="below",
-                line_width=0,
-                annotation_text="Night" if curr_date == min_date + timedelta(days=1) else None,
-                annotation_position="top left"
-            )
+            kwargs = {
+                "x0": s_curr["sunset"],
+                "x1": s_next["sunrise"],
+                "fillcolor": "rgba(30, 41, 59, 0.08)",
+                "opacity": 1,
+                "layer": "below",
+                "line_width": 0,
+            }
+            if curr_date == min_date + timedelta(days=1):
+                kwargs["annotation_text"] = "Night"
+                kwargs["annotation_position"] = "top left"
+            fig_timeline.add_vrect(**kwargs)
         except Exception:
             pass
         curr_date += timedelta(days=1)
@@ -760,7 +962,7 @@ else:
     st.divider()
 
 # --- RECENT DETECTIONS & TELEMETRY TABS ---
-tab_recent, tab_telemetry, tab_species_ref = st.tabs(["🕒 Recent Detections Feed", "📊 Hardware & System Telemetry", "📖 Species Reference List"])
+tab_recent, tab_telemetry, tab_map, tab_species_ref = st.tabs(["🕒 Recent Detections Feed", "📊 Hardware & System Telemetry", "📍 Map View", "📖 Species Reference List"])
 
 with tab_recent:
     st.subheader("Latest Recorded Detections")
@@ -791,23 +993,6 @@ with tab_recent:
 
 with tab_telemetry:
     st.subheader("Hardware Telemetry (Cellular & Wi-Fi Nodes)")
-    
-    # 1. Device deployment locations map
-    loc_data = []
-    for dev_id, info in deployments.items():
-        if info["latitude"] is not None and info["longitude"] is not None:
-            loc_data.append({
-                "Device ID": dev_id,
-                "Name": info["name"],
-                "Version": info["version"],
-                "latitude": info["latitude"],
-                "longitude": info["longitude"]
-            })
-    if loc_data:
-        loc_df = pd.DataFrame(loc_data)
-        st.markdown("### 📍 Active Node Locations")
-        st.map(loc_df, latitude="latitude", longitude="longitude")
-        st.divider()
 
     if not hb_df.empty and ("cpu" in hb_df.columns or "mem_free" in hb_df.columns or "shm" in hb_df.columns):
         telemetry_df = hb_df.dropna(subset=["_time"]).copy()
@@ -854,6 +1039,7 @@ with tab_telemetry:
                         labels={"_time": "Time", "mem_free": "RAM Free (MB)", "Device_Friendly": "Device"}
                     )
                     fig_mem.update_layout(margin=dict(l=0, r=0, t=40, b=10))
+                    fig_mem.update_yaxes(rangemode="tozero")
                     st.plotly_chart(fig_mem, use_container_width=True)
                     
             if "shm" in tel_plot_df.columns:
@@ -873,10 +1059,29 @@ with tab_telemetry:
     else:
         st.info("Telemetry data (CPU/RAM/SHM) is available when cellular nodes report heartbeats.")
 
+with tab_map:
+    st.subheader("Active Node Locations")
+    loc_data = []
+    for dev_id, info in deployments.items():
+        if dev_id in active_devices:
+            if info["latitude"] is not None and info["longitude"] is not None:
+                loc_data.append({
+                    "Device ID": dev_id,
+                    "Name": info["name"],
+                    "Version": info["version"],
+                    "latitude": info["latitude"],
+                    "longitude": info["longitude"]
+                })
+    if loc_data:
+        loc_df = pd.DataFrame(loc_data)
+        render_sensor_map(loc_df, key_suffix="tab_map")
+    else:
+        st.info("No active device locations mapped in current view.")
+
 with tab_species_ref:
     st.subheader("Reference Taxa Catalog")
     st.caption("Mapped species database containing 208 British birds and 17 British bat species.")
-    species_catalog, _, _, _ = load_species_database()
+    species_catalog, _, _, _, _ = load_species_database()
     st.dataframe(
         species_catalog[["species_id", "category", "common_name", "species", "class_name"]],
         column_config={
@@ -890,3 +1095,6 @@ with tab_species_ref:
         use_container_width=True,
         height=350
     )
+
+st.divider()
+st.caption("Page developed by UCL in collaboration with Yeo Valley.  \nAny errors or issues with this page please contact Duncan Wilson (d.j.wilson@ucl.ac.uk)")

@@ -158,6 +158,15 @@ def main():
         help="Tag key to inspect (default: 'device_id').",
     )
     parser.add_argument(
+        "--start",
+        default="1970-01-01T00:00:00Z",
+        help="Start time for deletion in RFC3339 format (default: '1970-01-01T00:00:00Z').",
+    )
+    parser.add_argument(
+        "--stop",
+        help="Stop time for deletion in RFC3339 format (default: current time).",
+    )
+    parser.add_argument(
         "--days",
         type=int,
         default=365,
@@ -272,19 +281,24 @@ def main():
                 print(f"   • `{d}`: (count check skipped)")
 
     # Perform Deletion if --execute is passed
-    start_time = "1970-01-01T00:00:00Z"
-    stop_time = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    start_time = args.start
+    stop_time = args.stop or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     if not args.execute:
         print("\n" + "=" * 65)
         print("💡 DRY-RUN COMPLETE — No records were deleted.")
         print(f"Targeted {len(targeted_devices)} device(s) to remove.")
         print("To permanently delete the records for the devices above, run:")
+        cmd = "python3 db-cleaner.py"
         if args.device:
             dev_str = " ".join(args.device)
-            print(f"   python3 db-cleaner.py --device {dev_str} --execute")
-        else:
-            print("   python3 db-cleaner.py --execute")
+            cmd += f" --device {dev_str}"
+        if args.start != "1970-01-01T00:00:00Z":
+            cmd += f" --start '{args.start}'"
+        if args.stop:
+            cmd += f" --stop '{args.stop}'"
+        cmd += " --execute"
+        print(f"   {cmd}")
         print("=" * 65)
     else:
         print("\n" + "⚠️ " * 20)
